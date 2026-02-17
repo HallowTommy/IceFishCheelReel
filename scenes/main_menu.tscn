@@ -1,0 +1,169 @@
+[gd_scene format=3 uid="uid://bu6sanwai3dyg"]
+
+[ext_resource type="Texture2D" uid="uid://bdb1iw8mi66tl" path="res://assets/art/background/mainmenu(1).jpg" id="1_8ln24"]
+[ext_resource type="FontFile" uid="uid://bssopqtd7xymm" path="res://assets/fonts/Fredoka-Bold.ttf" id="1_ekxnf"]
+[ext_resource type="Texture2D" uid="uid://bhcr73uqhtf6y" path="res://assets/art/menu/menu2.png" id="2_rtw2f"]
+[ext_resource type="Texture2D" uid="uid://b7c35ie6oam2h" path="res://assets/art/menu/2.png" id="2_wu84c"]
+[ext_resource type="Texture2D" uid="uid://kabgt5mfy6al" path="res://assets/icon/logo.png" id="3_8ln24"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tbmy8"]
+texture = ExtResource("2_wu84c")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ln24"]
+atlas = ExtResource("2_rtw2f")
+region = Rect2(784, 1464, 392, 184)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8ln24"]
+texture = SubResource("AtlasTexture_8ln24")
+
+[node name="MainMenu" type="Control" unique_id=2084233038]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="." unique_id=1117581506]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_8ln24")
+
+[node name="Menu" type="Panel" parent="." unique_id=886803565]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -440.0
+offset_top = -718.0
+offset_right = 440.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_tbmy8")
+
+[node name="Logo" type="TextureRect" parent="Menu" unique_id=139110888]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -617.5
+offset_top = -267.00003
+offset_right = 617.5
+offset_bottom = 316.99997
+grow_horizontal = 2
+scale = Vector2(0.495, 0.495)
+pivot_offset = Vector2(617.5, 292)
+texture = ExtResource("3_8ln24")
+
+[node name="Buttons" type="VBoxContainer" parent="Menu" unique_id=1805410657]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 194.0
+offset_top = 211.0
+offset_right = -201.0
+offset_bottom = -177.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="PlayButton" type="Button" parent="Menu/Buttons" unique_id=2116021511]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.92099476, 0.9209946, 0.9209946, 1)
+theme_override_fonts/font = ExtResource("1_ekxnf")
+theme_override_font_sizes/font_size = 55
+theme_override_styles/normal = SubResource("StyleBoxTexture_8ln24")
+
+[node name="Label" type="Label" parent="Menu/Buttons/PlayButton" unique_id=1716225183]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -156.0
+offset_top = -46.0
+offset_right = 156.0
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("1_ekxnf")
+theme_override_font_sizes/font_size = 50
+text = "START GAME"
+
+[node name="UpgradeButton" type="Button" parent="Menu/Buttons" unique_id=1933283989]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.92099476, 0.9209946, 0.9209946, 1)
+theme_override_fonts/font = ExtResource("1_ekxnf")
+theme_override_font_sizes/font_size = 55
+theme_override_styles/normal = SubResource("StyleBoxTexture_8ln24")
+
+[node name="Label" type="Label" parent="Menu/Buttons/UpgradeButton" unique_id=1954748497]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -168.5
+offset_top = -46.0
+offset_right = 168.5
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("1_ekxnf")
+theme_override_font_sizes/font_size = 50
+text = "UPGRADE ROD"
+
+[node name="SettingButton" type="Button" parent="Menu/Buttons" unique_id=538678522]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.92099476, 0.9209946, 0.9209946, 1)
+theme_override_fonts/font = ExtResource("1_ekxnf")
+theme_override_font_sizes/font_size = 55
+theme_override_styles/normal = SubResource("StyleBoxTexture_8ln24")
+
+[node name="Label" type="Label" parent="Menu/Buttons/SettingButton" unique_id=561100521]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -101.5
+offset_top = -46.0
+offset_right = 101.5
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("1_ekxnf")
+theme_override_font_sizes/font_size = 50
+text = "SETTING"

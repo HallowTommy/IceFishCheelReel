@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://dmsv5df1g5ymb"]
+
+[ext_resource type="Script" uid="uid://bxofnimv06i1b" path="res://scripts/fish.gd" id="1_8g0i4"]
+[ext_resource type="Texture2D" uid="uid://cc4dhlaqoea7g" path="res://assets/art/fish/blue.png" id="1_n6yr6"]
+[ext_resource type="AudioStream" uid="uid://btt6tc0dm4tet" path="res://assets/audio/reward_sound.mp3" id="2_nub35"]
+
+[node name="Fish" type="Node2D" unique_id=2142031297]
+z_index = 5
+script = ExtResource("1_8g0i4")
+reward_sound = ExtResource("2_nub35")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=513080230]
+position = Vector2(-114, 311)
+scale = Vector2(4.5, 4.5)
+texture = ExtResource("1_n6yr6")

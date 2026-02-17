@@ -1,0 +1,550 @@
+[gd_scene format=3 uid="uid://cvp7f4xkjk7wl"]
+
+[ext_resource type="Texture2D" uid="uid://bbhsiq4jaop1j" path="res://assets/art/background/upgrade(1).jpg" id="1_3shnc"]
+[ext_resource type="Script" uid="uid://bkk15dki5obym" path="res://scripts/level_select.gd" id="1_rif6e"]
+[ext_resource type="FontFile" uid="uid://bssopqtd7xymm" path="res://assets/fonts/Fredoka-Bold.ttf" id="3_chg43"]
+[ext_resource type="Texture2D" uid="uid://bhcr73uqhtf6y" path="res://assets/art/menu/menu2.png" id="4_r77uv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2epne"]
+atlas = ExtResource("4_r77uv")
+region = Rect2(1296, 1072, 1392, 1616)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4nqmc"]
+texture = SubResource("AtlasTexture_2epne")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rif6e"]
+atlas = ExtResource("4_r77uv")
+region = Rect2(1320, 8, 552, 408)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_chg43"]
+texture = SubResource("AtlasTexture_rif6e")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r77uv"]
+atlas = ExtResource("4_r77uv")
+region = Rect2(2216, 504, 240, 168)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4nqmc"]
+atlas = ExtResource("4_r77uv")
+region = Rect2(800, 1656, 360, 144)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7plkq"]
+texture = SubResource("AtlasTexture_4nqmc")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_chg43"]
+atlas = ExtResource("4_r77uv")
+region = Rect2(2000, 8, 560, 424)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ueedh"]
+atlas = ExtResource("4_r77uv")
+region = Rect2(2248, 736, 224, 232)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ckc44"]
+texture = SubResource("AtlasTexture_ueedh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_o2xx4"]
+texture = SubResource("AtlasTexture_ueedh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_htctk"]
+texture = SubResource("AtlasTexture_ueedh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_s6tf7"]
+texture = SubResource("AtlasTexture_ueedh")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_u4mbh"]
+texture = SubResource("AtlasTexture_ueedh")
+
+[node name="LevelSelect" type="Control" unique_id=1309174472]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rif6e")
+
+[node name="Background" type="TextureRect" parent="." unique_id=330036719]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -204.0
+offset_top = -250.0
+offset_right = 204.0
+offset_bottom = 452.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_3shnc")
+
+[node name="TransitionRect" type="ColorRect" parent="." unique_id=1020626729]
+modulate = Color(1, 1, 1, 0)
+z_index = 100
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Menu" type="Panel" parent="." unique_id=2083351613]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -508.0
+offset_top = -576.0
+offset_right = 508.0
+offset_bottom = 576.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(700, 812)
+theme_override_styles/panel = SubResource("StyleBoxTexture_4nqmc")
+
+[node name="Title" type="Label" parent="Menu" unique_id=672590207]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -310.0
+offset_top = 37.0
+offset_right = 310.0
+offset_bottom = 147.0
+grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("3_chg43")
+theme_override_font_sizes/font_size = 90
+text = "LEVEL SELECT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="Menu" unique_id=1007179138]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 101.0
+offset_top = 186.0
+offset_right = -101.0
+offset_bottom = -186.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 30
+columns = 2
+
+[node name="LevelPanel" type="Panel" parent="Menu/GridContainer" unique_id=1130988351]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_chg43")
+
+[node name="Level" type="Label" parent="Menu/GridContainer/LevelPanel" unique_id=706255507]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -77.0
+offset_top = 34.0
+offset_right = 77.0
+offset_bottom = 95.0
+grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("3_chg43")
+theme_override_font_sizes/font_size = 50
+text = "Level 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LevelMap" type="TextureRect" parent="Menu/GridContainer/LevelPanel" unique_id=1035866293]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -72.5
+offset_right = 120.0
+offset_bottom = 95.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(120, 85)
+texture = SubResource("AtlasTexture_r77uv")
+
+[node name="PlayLevel1" type="Button" parent="Menu/GridContainer/LevelPanel" unique_id=1643942617]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -112.0
+offset_top = -88.0
+offset_right = 112.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_7plkq")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_7plkq")
+theme_override_styles/hover = SubResource("StyleBoxTexture_7plkq")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_7plkq")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_7plkq")
+theme_override_styles/focus = SubResource("StyleBoxTexture_7plkq")
+
+[node name="Label" type="Label" parent="Menu/GridContainer/LevelPanel/PlayLevel1" unique_id=1980190572]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -61.25
+offset_top = -15.0
+offset_right = 61.25
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0.69803923, 0.5137255, 0.05882353, 1)
+theme_override_colors/font_outline_color = Color(0.69803923, 0.5137255, 0.05882353, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 2
+theme_override_fonts/font = ExtResource("3_chg43")
+theme_override_font_sizes/font_size = 40
+text = "Play"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LevelPanel2" type="Panel" parent="Menu/GridContainer" unique_id=1507221199]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_chg43")
+
+[node name="Level" type="Label" parent="Menu/GridContainer/LevelPanel2" unique_id=135250041]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -77.0
+offset_top = 34.0
+offset_right = 77.0
+offset_bottom = 95.0
+grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("3_chg43")
+theme_override_font_sizes/font_size = 50
+text = "Level 2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LevelMap" type="TextureRect" parent="Menu/GridContainer/LevelPanel2" unique_id=1025932651]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -72.5
+offset_right = 120.0
+offset_bottom = 95.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(120, 85)
+texture = SubResource("AtlasTexture_r77uv")
+
+[node name="PlayLevel2" type="Button" parent="Menu/GridContainer/LevelPanel2" unique_id=275586433]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -112.0
+offset_top = -88.0
+offset_right = 112.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_7plkq")
+
+[node name="Label" type="Label" parent="Menu/GridContainer/LevelPanel2/PlayLevel2" unique_id=375587337]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -61.25
+offset_top = -15.0
+offset_right = 61.25
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0.69803923, 0.5137255, 0.05882353, 1)
+theme_override_colors/font_outline_color = Color(0.69803923, 0.5137255, 0.05882353, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 2
+theme_override_fonts/font = ExtResource("3_chg43")
+theme_override_font_sizes/font_size = 40
+text = "Play"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="Menu/GridContainer/LevelPanel2" unique_id=1155546673]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -88.999985
+offset_top = -20.5
+offset_right = 126.72681
+offset_bottom = 20.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.695, 0.695)
+pivot_offset = Vector2(266.5, 227.5)
+texture = SubResource("AtlasTexture_chg43")
+
+[node name="LevelPanel3" type="Panel" parent="Menu/GridContainer" unique_id=678717961]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_chg43")
+
+[node name="Level" type="Label" parent="Menu/GridContainer/LevelPanel3" unique_id=1712216306]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -77.0
+offset_top = 34.0
+offset_right = 77.0
+offset_bottom = 95.0
+grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("3_chg43")
+theme_override_font_sizes/font_size = 50
+text = "Level 3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LevelMap" type="TextureRect" parent="Menu/GridContainer/LevelPanel3" unique_id=779437713]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -72.5
+offset_right = 120.0
+offset_bottom = 95.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(120, 85)
+texture = SubResource("AtlasTexture_r77uv")
+
+[node name="PlayLevel3" type="Button" parent="Menu/GridContainer/LevelPanel3" unique_id=300482435]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -112.0
+offset_top = -88.0
+offset_right = 112.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_7plkq")
+
+[node name="Label" type="Label" parent="Menu/GridContainer/LevelPanel3/PlayLevel3" unique_id=1972049573]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -61.25
+offset_top = -15.0
+offset_right = 61.25
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0.69803923, 0.5137255, 0.05882353, 1)
+theme_override_colors/font_outline_color = Color(0.69803923, 0.5137255, 0.05882353, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 2
+theme_override_fonts/font = ExtResource("3_chg43")
+theme_override_font_sizes/font_size = 40
+text = "Play"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="Menu/GridContainer/LevelPanel3" unique_id=300390801]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -88.999985
+offset_top = -20.5
+offset_right = 126.72681
+offset_bottom = 20.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.695, 0.695)
+pivot_offset = Vector2(266.5, 227.5)
+texture = SubResource("AtlasTexture_chg43")
+
+[node name="LevelPanel4" type="Panel" parent="Menu/GridContainer" unique_id=1353670299]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_chg43")
+
+[node name="Level" type="Label" parent="Menu/GridContainer/LevelPanel4" unique_id=1980232216]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -77.0
+offset_top = 34.0
+offset_right = 77.0
+offset_bottom = 95.0
+grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("3_chg43")
+theme_override_font_sizes/font_size = 50
+text = "Level 4"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LevelMap" type="TextureRect" parent="Menu/GridContainer/LevelPanel4" unique_id=1231470587]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -72.5
+offset_right = 120.0
+offset_bottom = 95.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(120, 85)
+texture = SubResource("AtlasTexture_r77uv")
+
+[node name="PlayLevel4" type="Button" parent="Menu/GridContainer/LevelPanel4" unique_id=1528377282]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -112.0
+offset_top = -88.0
+offset_right = 112.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_7plkq")
+
+[node name="Label" type="Label" parent="Menu/GridContainer/LevelPanel4/PlayLevel4" unique_id=1875141516]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -61.25
+offset_top = -15.0
+offset_right = 61.25
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0.69803923, 0.5137255, 0.05882353, 1)
+theme_override_colors/font_outline_color = Color(0.69803923, 0.5137255, 0.05882353, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 2
+theme_override_fonts/font = ExtResource("3_chg43")
+theme_override_font_sizes/font_size = 40
+text = "Play"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="Menu/GridContainer/LevelPanel4" unique_id=62700304]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -88.999985
+offset_top = -20.5
+offset_right = 126.72681
+offset_bottom = 20.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.695, 0.695)
+pivot_offset = Vector2(266.5, 227.5)
+texture = SubResource("AtlasTexture_chg43")
+
+[node name="ExitButton" type="Button" parent="Menu" unique_id=1784683084]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -134.99994
+offset_top = -31.00003
+offset_right = -126.99994
+offset_bottom = -23.00003
+grow_horizontal = 0
+scale = Vector2(20, 20)
+theme_override_styles/normal = SubResource("StyleBoxTexture_ckc44")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_o2xx4")
+theme_override_styles/hover = SubResource("StyleBoxTexture_htctk")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_s6tf7")
+theme_override_styles/focus = SubResource("StyleBoxTexture_u4mbh")
+
+[connection signal="pressed" from="Menu/GridContainer/LevelPanel/PlayLevel1" to="." method="_on_play_level_1_pressed"]
+[connection signal="pressed" from="Menu/ExitButton" to="." method="_on_exit_button_pressed"]

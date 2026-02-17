@@ -1,0 +1,379 @@
+[gd_scene format=3 uid="uid://1lwukp1okd8"]
+
+[ext_resource type="Script" uid="uid://c6hm80xcwcmgp" path="res://scripts/game.gd" id="1_uwrxv"]
+[ext_resource type="PackedScene" uid="uid://dhs8cxrsgyf15" path="res://scenes/floating_text.tscn" id="2_yqjtg"]
+[ext_resource type="PackedScene" uid="uid://dmsv5df1g5ymb" path="res://scenes/fish.tscn" id="3_kvuet"]
+[ext_resource type="Texture2D" uid="uid://dn8n78vsc0re3" path="res://assets/art/snow.png" id="4_rysoc"]
+[ext_resource type="Texture2D" uid="uid://crwcbq4j2puhe" path="res://assets/art/background/background3.png" id="5_rysoc"]
+[ext_resource type="Texture2D" uid="uid://beyvly67ryvbj" path="res://assets/art/background/background2(1).png" id="6_ssvqc"]
+[ext_resource type="Texture2D" uid="uid://cu8i1e4elsriy" path="res://assets/art/menu/spritesheet_menu.png" id="8_kvuet"]
+[ext_resource type="FontFile" uid="uid://bssopqtd7xymm" path="res://assets/fonts/Fredoka-Bold.ttf" id="10_dinhu"]
+[ext_resource type="Texture2D" uid="uid://bhcr73uqhtf6y" path="res://assets/art/menu/menu2.png" id="11_kvuet"]
+[ext_resource type="AudioStream" uid="uid://eh61llww8kbm" path="res://assets/audio/gameplay_music.mp3" id="13_kvuet"]
+[ext_resource type="PackedScene" uid="uid://cwl3aq7gkttn1" path="res://scenes/character.tscn" id="15_ir15t"]
+[ext_resource type="PackedScene" uid="uid://d2e226kd6yjca" path="res://scenes/rope_rig.tscn" id="16_ca42v"]
+[ext_resource type="PackedScene" uid="uid://cmoqpuygxc5w8" path="res://scenes/ScreenTransition.tscn" id="17_vj9qx"]
+
+[sub_resource type="Curve" id="Curve_ca42v"]
+_data = [Vector2(0.022727273, 1), 0.0, 0.0, 0, 0, Vector2(0.7528409, 0.5424582), -1.6145853, -1.6145853, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_rysoc"]
+curve = SubResource("Curve_ca42v")
+
+[sub_resource type="Gradient" id="Gradient_ssvqc"]
+offsets = PackedFloat32Array(0.41717792, 0.68404907)
+colors = PackedColorArray(1, 1, 1, 0.30588236, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_264po"]
+gradient = SubResource("Gradient_ssvqc")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1kice"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(900, 1, 1)
+gravity = Vector3(30, 98, 0)
+scale_max = 10.0
+color_initial_ramp = SubResource("GradientTexture1D_264po")
+alpha_curve = SubResource("CurveTexture_rysoc")
+turbulence_enabled = true
+turbulence_influence_min = 0.020000001
+turbulence_influence_max = 0.080000006
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_rysoc"]
+load_path = "res://.godot/imported/snow.png-e66f0fa32f6d88edd79b8c43c8e64e28.ctex"
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ssvqc"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(600, 1, 1)
+gravity = Vector3(20, 98, 0)
+scale_max = 6.0
+color_initial_ramp = SubResource("GradientTexture1D_264po")
+alpha_curve = SubResource("CurveTexture_rysoc")
+turbulence_enabled = true
+turbulence_influence_min = 0.020000001
+turbulence_influence_max = 0.080000006
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_264po"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(600, 1, 1)
+gravity = Vector3(20, 98, 0)
+scale_max = 3.0
+color_initial_ramp = SubResource("GradientTexture1D_264po")
+alpha_curve = SubResource("CurveTexture_rysoc")
+turbulence_enabled = true
+turbulence_influence_min = 0.020000001
+turbulence_influence_max = 0.080000006
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_trtic"]
+atlas = ExtResource("8_kvuet")
+region = Rect2(184, 160, 296, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ca42v"]
+atlas = ExtResource("8_kvuet")
+region = Rect2(40, 152, 128, 136)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dinhu"]
+atlas = ExtResource("11_kvuet")
+region = Rect2(408, 1824, 384, 168)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kvuet"]
+texture = SubResource("AtlasTexture_dinhu")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ir15t"]
+atlas = ExtResource("11_kvuet")
+region = Rect2(792, 1464, 376, 184)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ca42v"]
+texture = SubResource("AtlasTexture_ir15t")
+
+[sub_resource type="Animation" id="Animation_ssvqc"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("RopeRig:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(601, 743)]
+}
+
+[sub_resource type="Animation" id="Animation_ca42v"]
+resource_name = "hook_coordinate"
+length = 0.96666664
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("RopeRig:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.41, 0.9666586),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(601, 737), Vector2(587, 764), Vector2(573, 792)]
+}
+
+[sub_resource type="Animation" id="Animation_rysoc"]
+resource_name = "hook_coordinate_reverse"
+length = 0.96666664
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("RopeRig:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.96666664),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(580, 777), Vector2(595, 750.1429), Vector2(601, 738)]
+}
+
+[sub_resource type="Animation" id="Animation_264po"]
+resource_name = "idle_hook"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("RopeRig:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(582, 768)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rysoc"]
+_data = {
+&"RESET": SubResource("Animation_ssvqc"),
+&"hook_coordinate": SubResource("Animation_ca42v"),
+&"hook_coordinate_reverse": SubResource("Animation_rysoc"),
+&"idle_hook": SubResource("Animation_264po")
+}
+
+[node name="Game" type="Node" unique_id=1366294604]
+script = ExtResource("1_uwrxv")
+floating_text_scene = ExtResource("2_yqjtg")
+fish_scene = ExtResource("3_kvuet")
+
+[node name="Particles" type="Node2D" parent="." unique_id=524309350]
+position = Vector2(0, -160)
+
+[node name="Foreground" type="GPUParticles2D" parent="Particles" unique_id=1756023411]
+z_index = 20
+position = Vector2(383, -38)
+amount = 100
+texture = ExtResource("4_rysoc")
+lifetime = 25.0
+preprocess = 30.0
+speed_scale = 7.0
+process_material = SubResource("ParticleProcessMaterial_1kice")
+
+[node name="Mid" type="GPUParticles2D" parent="Particles" unique_id=1854268689]
+z_index = 20
+position = Vector2(383, -38)
+amount = 60
+texture = SubResource("CompressedTexture2D_rysoc")
+lifetime = 25.0
+preprocess = 30.0
+speed_scale = 2.0
+process_material = SubResource("ParticleProcessMaterial_ssvqc")
+
+[node name="Background" type="GPUParticles2D" parent="Particles" unique_id=937093086]
+z_index = 20
+position = Vector2(383, -38)
+amount = 50
+texture = ExtResource("4_rysoc")
+lifetime = 25.0
+preprocess = 30.0
+process_material = SubResource("ParticleProcessMaterial_264po")
+
+[node name="Background" type="Node2D" parent="." unique_id=505809023]
+position = Vector2(-54.999996, -151)
+scale = Vector2(0.85, 0.91)
+
+[node name="Background2" type="Sprite2D" parent="Background" unique_id=2139654515]
+z_index = 10
+position = Vector2(599.76, 1178)
+scale = Vector2(1.28, 1.28)
+texture = ExtResource("5_rysoc")
+
+[node name="Background3" type="Sprite2D" parent="Background" unique_id=1748832489]
+position = Vector2(599.76, 1180)
+scale = Vector2(1.28, 1.28)
+texture = ExtResource("6_ssvqc")
+
+[node name="ScreenTransition" parent="." unique_id=1053370082 instance=ExtResource("17_vj9qx")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=468696662]
+
+[node name="UI" type="Control" parent="CanvasLayer" unique_id=226900259]
+z_index = 20
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CoinBackground" type="TextureRect" parent="CanvasLayer/UI" unique_id=358121280]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 52.0
+offset_right = 427.0
+offset_bottom = 180.0
+scale = Vector2(0.715, 0.715)
+texture = SubResource("AtlasTexture_trtic")
+
+[node name="Coin" type="HBoxContainer" parent="CanvasLayer/UI/CoinBackground" unique_id=264230288]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -229.5
+offset_top = -72.0
+offset_right = 140.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="CoinIcon" type="TextureRect" parent="CanvasLayer/UI/CoinBackground/Coin" unique_id=658030270]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = SubResource("AtlasTexture_ca42v")
+stretch_mode = 3
+
+[node name="CoinLabel" type="Label" parent="CanvasLayer/UI/CoinBackground/Coin" unique_id=1789998491]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.8, 0.16078432, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.48235294)
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 2
+theme_override_fonts/font = ExtResource("10_dinhu")
+theme_override_font_sizes/font_size = 70
+text = "0"
+
+[node name="BackButton" type="Button" parent="CanvasLayer/UI" unique_id=1661768453]
+z_index = 20
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -509.99997
+offset_top = -184.0
+offset_right = -189.99997
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.845, 0.845)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_kvuet")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_kvuet")
+theme_override_styles/hover = SubResource("StyleBoxTexture_kvuet")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_kvuet")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_kvuet")
+theme_override_styles/focus = SubResource("StyleBoxTexture_kvuet")
+
+[node name="Label" type="Label" parent="CanvasLayer/UI/BackButton" unique_id=681086667]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -65.5
+offset_top = -55.313644
+offset_right = 65.5
+offset_bottom = 30.686356
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 20
+theme_override_fonts/font = ExtResource("10_dinhu")
+theme_override_font_sizes/font_size = 55
+text = "Back"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TapButton" type="Button" parent="CanvasLayer/UI" unique_id=379462199]
+z_index = 20
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -183.0
+offset_top = -444.0
+offset_right = 183.0
+offset_bottom = -256.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_ca42v")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ca42v")
+theme_override_styles/hover = SubResource("StyleBoxTexture_ca42v")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_ca42v")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_ca42v")
+theme_override_styles/focus = SubResource("StyleBoxTexture_ca42v")
+
+[node name="Label" type="Label" parent="CanvasLayer/UI/TapButton" unique_id=16342280]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -163.5
+offset_top = -41.0
+offset_right = 163.5
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 20
+theme_override_fonts/font = ExtResource("10_dinhu")
+theme_override_font_sizes/font_size = 40
+text = "TAP TO CATCH"
+horizontal_alignment = 1
+
+[node name="FishSpawnPoint" type="Marker2D" parent="." unique_id=34640333]
+visible = false
+position = Vector2(547, 1477)
+
+[node name="Character" parent="." unique_id=612137750 instance=ExtResource("15_ir15t")]
+z_index = 5
+position = Vector2(792.00006, 1006.00006)
+scale = Vector2(0.77, 0.77)
+
+[node name="RopeRig" parent="." unique_id=1927109933 instance=ExtResource("16_ca42v")]
+position = Vector2(601, 743)
+up_pos = Vector2(0, 100)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1487039209]
+libraries/ = SubResource("AnimationLibrary_rysoc")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1187496523]
+position = Vector2(544, 960)
+zoom = Vector2(0.84, 0.84)
+
+[node name="Music" type="AudioStreamPlayer2D" parent="." unique_id=668730193]
+stream = ExtResource("13_kvuet")
+volume_db = 3.981
+autoplay = true
+bus = &"Music"
+
+[connection signal="pressed" from="CanvasLayer/UI/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/UI/TapButton" to="." method="_on_button_pressed"]

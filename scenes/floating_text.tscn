@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://dhs8cxrsgyf15"]
+
+[ext_resource type="Script" uid="uid://doehn1n03mkq1" path="res://scripts/floating_text.gd" id="1_45khh"]
+[ext_resource type="FontFile" uid="uid://bssopqtd7xymm" path="res://assets/fonts/Fredoka-Bold.ttf" id="1_vqah5"]
+[ext_resource type="Texture2D" uid="uid://dncf4k5b4na2u" path="res://assets/art/spritesheet (11).png" id="4_27d3m"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_073qt"]
+atlas = ExtResource("4_27d3m")
+region = Rect2(0, 0, 309, 309)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k77jv"]
+atlas = ExtResource("4_27d3m")
+region = Rect2(309, 0, 309, 309)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tt6gy"]
+atlas = ExtResource("4_27d3m")
+region = Rect2(618, 0, 309, 309)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kxrkf"]
+atlas = ExtResource("4_27d3m")
+region = Rect2(0, 309, 309, 309)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0odlx"]
+atlas = ExtResource("4_27d3m")
+region = Rect2(309, 309, 309, 309)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gwfv3"]
+atlas = ExtResource("4_27d3m")
+region = Rect2(618, 309, 309, 309)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pyudk"]
+atlas = ExtResource("4_27d3m")
+region = Rect2(0, 618, 309, 309)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jlllx"]
+atlas = ExtResource("4_27d3m")
+region = Rect2(309, 618, 309, 309)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_34idb"]
+atlas = ExtResource("4_27d3m")
+region = Rect2(618, 618, 309, 309)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_430fc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_073qt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k77jv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tt6gy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kxrkf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0odlx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gwfv3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pyudk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jlllx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_34idb")
+}],
+"loop": false,
+"name": &"bubble",
+"speed": 5.0
+}]
+
+[node name="FloatingText" type="Label" unique_id=994520911]
+z_index = 100
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_constants/outline_size = 20
+theme_override_fonts/font = ExtResource("1_vqah5")
+theme_override_font_sizes/font_size = 80
+text = "25"
+script = ExtResource("1_45khh")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=188852194]
+z_index = -1
+position = Vector2(55, 57)
+sprite_frames = SubResource("SpriteFrames_430fc")
+animation = &"bubble"
+speed_scale = 3.5

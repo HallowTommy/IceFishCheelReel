@@ -1,0 +1,556 @@
+[gd_scene format=3 uid="uid://cuunyergn27fs"]
+
+[ext_resource type="Script" uid="uid://bge72sc7v8e73" path="res://scripts/upgrade.gd" id="1_5ybcx"]
+[ext_resource type="Texture2D" uid="uid://bbhsiq4jaop1j" path="res://assets/art/background/upgrade(1).jpg" id="1_w4b0n"]
+[ext_resource type="FontFile" uid="uid://bssopqtd7xymm" path="res://assets/fonts/Fredoka-Bold.ttf" id="2_cdaqh"]
+[ext_resource type="Texture2D" uid="uid://b1pjuudlu048v" path="res://assets/art/menu/1 (2).png" id="2_iumj1"]
+[ext_resource type="Texture2D" uid="uid://bhcr73uqhtf6y" path="res://assets/art/menu/menu2.png" id="3_iumj1"]
+[ext_resource type="Texture2D" uid="uid://bt6cs2aafggjb" path="res://assets/art/menu/menu.png" id="4_cdaqh"]
+[ext_resource type="Texture2D" uid="uid://cu8i1e4elsriy" path="res://assets/art/menu/spritesheet_menu.png" id="5_inqcq"]
+[ext_resource type="Texture2D" uid="uid://cc4dhlaqoea7g" path="res://assets/art/fish/blue.png" id="5_ms1go"]
+[ext_resource type="Shader" uid="uid://mj1s5dgfqnts" path="res://shaders/rotating_radial_stripes.gdshader" id="5_ski2k"]
+[ext_resource type="Texture2D" uid="uid://c7827d2phip0v" path="res://assets/art/coin.png" id="5_ueedh"]
+[ext_resource type="Texture2D" uid="uid://dadwv66ecc8ab" path="res://assets/art/fish/orange.png" id="6_e870k"]
+[ext_resource type="Texture2D" uid="uid://4ta2wcemas83" path="res://assets/art/background/background_level1.png" id="6_l2yrn"]
+[ext_resource type="Texture2D" uid="uid://b4g0k6drkhon3" path="res://assets/art/menu/menu1.png" id="7_aqm54"]
+[ext_resource type="Texture2D" uid="uid://b04x5op1fvvan" path="res://assets/art/fish/red.png" id="7_e870k"]
+[ext_resource type="Texture2D" uid="uid://b7j7y08q7w8wy" path="res://assets/art/rod/rod_level1.png" id="8_l2yrn"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iumj1"]
+texture = ExtResource("2_iumj1")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_inqcq"]
+atlas = ExtResource("5_inqcq")
+region = Rect2(184, 160, 296, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b8hel"]
+atlas = ExtResource("5_inqcq")
+region = Rect2(40, 152, 128, 136)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_srj7o"]
+shader = ExtResource("5_ski2k")
+shader_parameter/center = Vector2(0.5, 0.5)
+shader_parameter/stripes = 16
+shader_parameter/speed = 0.2
+shader_parameter/direction = 1
+shader_parameter/color_modifier = Vector3(92.37, 0.95, 2.855)
+shader_parameter/fade_radius = 0.27999999374144
+shader_parameter/fade_softness = 0.45999998971808
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0dsf5"]
+atlas = ExtResource("5_inqcq")
+region = Rect2(32, 1568, 1248, 656)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ski2k"]
+bg_color = Color(0.18039216, 0.32156864, 0.44705883, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.11764706, 0.26666668, 0.38039216, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+expand_margin_bottom = 40.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_srj7o"]
+bg_color = Color(0.08627451, 0.56078434, 1, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.11764706, 0.26666668, 0.38039216, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+expand_margin_bottom = 40.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_inqcq"]
+bg_color = Color(1, 0.49019608, 0.050980393, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.11764706, 0.26666668, 0.38039216, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+expand_margin_bottom = 40.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l2yrn"]
+bg_color = Color(0.99607843, 0.21960784, 0.14509805, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.11764706, 0.26666668, 0.38039216, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+expand_margin_bottom = 40.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aqm54"]
+atlas = ExtResource("4_cdaqh")
+region = Rect2(16, 1864, 664, 296)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5ybcx"]
+texture = SubResource("AtlasTexture_aqm54")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lwlwk"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ms1go"]
+atlas = ExtResource("7_aqm54")
+region = Rect2(64, 2176, 576, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lwlwk"]
+atlas = ExtResource("3_iumj1")
+region = Rect2(2248, 736, 224, 232)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ueedh"]
+texture = SubResource("AtlasTexture_lwlwk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aqm54"]
+texture = SubResource("AtlasTexture_lwlwk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lwlwk"]
+texture = SubResource("AtlasTexture_lwlwk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ms1go"]
+texture = SubResource("AtlasTexture_lwlwk")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e870k"]
+texture = SubResource("AtlasTexture_lwlwk")
+
+[node name="RodUpgrade" type="Control" unique_id=104326944]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5ybcx")
+metadata/_edit_vertical_guides_ = [148.0, 964.0]
+
+[node name="Background" type="TextureRect" parent="." unique_id=1620658559]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -41.0
+offset_top = -40.0
+offset_right = 41.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_w4b0n")
+
+[node name="Menu" type="Panel" parent="." unique_id=761743536]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -482.0
+offset_top = -836.0
+offset_right = 482.0
+offset_bottom = 836.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(700, 812)
+theme_override_styles/panel = SubResource("StyleBoxTexture_iumj1")
+
+[node name="CoinBackground" type="TextureRect" parent="Menu" unique_id=471553422]
+layout_mode = 0
+offset_left = 20.0
+offset_top = -74.0
+offset_right = 369.0
+offset_bottom = 54.0
+scale = Vector2(0.715, 0.715)
+texture = SubResource("AtlasTexture_inqcq")
+
+[node name="Coin" type="HBoxContainer" parent="Menu/CoinBackground" unique_id=203967397]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -229.5
+offset_top = -72.0
+offset_right = 140.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="CoinIcon" type="TextureRect" parent="Menu/CoinBackground/Coin" unique_id=1970635197]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = SubResource("AtlasTexture_b8hel")
+stretch_mode = 3
+
+[node name="CoinLabel" type="Label" parent="Menu/CoinBackground/Coin" unique_id=830074836]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.8, 0.16078432, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.48235294)
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 2
+theme_override_fonts/font = ExtResource("2_cdaqh")
+theme_override_font_sizes/font_size = 70
+text = "0"
+
+[node name="Title" type="Label" parent="Menu" unique_id=105133114]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -236.0
+offset_top = 95.72095
+offset_right = 236.0
+offset_bottom = 181.72095
+grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("2_cdaqh")
+theme_override_font_sizes/font_size = 90
+text = "ROD UPGRADE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Rod" type="TextureRect" parent="Menu" unique_id=534674877]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -384.0
+offset_top = -595.0
+offset_right = 384.0
+offset_bottom = 101.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_l2yrn")
+
+[node name="RotatingRadial" type="ColorRect" parent="Menu/Rod" unique_id=1134005755]
+material = SubResource("ShaderMaterial_srj7o")
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -380.0
+offset_top = -347.0
+offset_right = 380.0
+offset_bottom = 347.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RodImage" type="TextureRect" parent="Menu/Rod" unique_id=577736074]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -648.0
+offset_top = -580.0
+offset_right = 648.0
+offset_bottom = 580.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.44, 0.44)
+pivot_offset = Vector2(647.99994, 579.99994)
+texture = ExtResource("8_l2yrn")
+
+[node name="Level" type="Label" parent="Menu/Rod" unique_id=73538799]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -123.0
+offset_top = 28.0
+offset_right = 123.0
+offset_bottom = 125.0
+grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("2_cdaqh")
+theme_override_font_sizes/font_size = 60
+text = "LEVEL"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LevelCost" type="TextureRect" parent="Menu" unique_id=1081469771]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -406.0
+offset_top = -656.9999
+offset_right = 842.0
+offset_bottom = -0.9998779
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.65, 0.65)
+texture = SubResource("AtlasTexture_0dsf5")
+
+[node name="Chance" type="Label" parent="Menu/LevelCost" unique_id=3942762]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -246.99994
+offset_top = -100.00011
+offset_right = 247.00006
+offset_bottom = -3.0001068
+grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("2_cdaqh")
+theme_override_font_sizes/font_size = 80
+text = "CHANCES"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FishBox" type="VBoxContainer" parent="Menu/LevelCost" unique_id=850547149]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 68.30762
+offset_top = 40.0
+offset_right = -68.30762
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+
+[node name="BlueFish" type="HBoxContainer" parent="Menu/LevelCost/FishBox" unique_id=1505473636]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 40
+
+[node name="FishIcon" type="TextureRect" parent="Menu/LevelCost/FishBox/BlueFish" unique_id=1045696321]
+layout_mode = 2
+texture = ExtResource("5_ms1go")
+expand_mode = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Menu/LevelCost/FishBox/BlueFish" unique_id=1877054344]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Description" type="Label" parent="Menu/LevelCost/FishBox/BlueFish/VBoxContainer" unique_id=1326284762]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 6
+theme_override_fonts/font = ExtResource("2_cdaqh")
+theme_override_font_sizes/font_size = 50
+text = "Blue Fish (Common, low reward)"
+
+[node name="FishChanceBar" type="ProgressBar" parent="Menu/LevelCost/FishBox/BlueFish/VBoxContainer" unique_id=2036913173]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/background = SubResource("StyleBoxFlat_ski2k")
+theme_override_styles/fill = SubResource("StyleBoxFlat_srj7o")
+value = 50.0
+show_percentage = false
+
+[node name="OrangeFish" type="HBoxContainer" parent="Menu/LevelCost/FishBox" unique_id=2037915309]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 40
+
+[node name="FishIcon" type="TextureRect" parent="Menu/LevelCost/FishBox/OrangeFish" unique_id=1890826951]
+layout_mode = 2
+texture = ExtResource("6_e870k")
+expand_mode = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Menu/LevelCost/FishBox/OrangeFish" unique_id=1154876011]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Description" type="Label" parent="Menu/LevelCost/FishBox/OrangeFish/VBoxContainer" unique_id=1318239523]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 6
+theme_override_fonts/font = ExtResource("2_cdaqh")
+theme_override_font_sizes/font_size = 50
+text = "Orange Fish (Uncommon, medium reward)"
+
+[node name="FishChanceBar" type="ProgressBar" parent="Menu/LevelCost/FishBox/OrangeFish/VBoxContainer" unique_id=1904795893]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/background = SubResource("StyleBoxFlat_ski2k")
+theme_override_styles/fill = SubResource("StyleBoxFlat_inqcq")
+value = 50.0
+show_percentage = false
+
+[node name="RedFish" type="HBoxContainer" parent="Menu/LevelCost/FishBox" unique_id=1434888538]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 40
+
+[node name="FishIcon" type="TextureRect" parent="Menu/LevelCost/FishBox/RedFish" unique_id=208286065]
+layout_mode = 2
+texture = ExtResource("7_e870k")
+expand_mode = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Menu/LevelCost/FishBox/RedFish" unique_id=423595526]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Description" type="Label" parent="Menu/LevelCost/FishBox/RedFish/VBoxContainer" unique_id=88020832]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 6
+theme_override_fonts/font = ExtResource("2_cdaqh")
+theme_override_font_sizes/font_size = 50
+text = "Red Fish (Rare, high reward)"
+
+[node name="FishChanceBar" type="ProgressBar" parent="Menu/LevelCost/FishBox/RedFish/VBoxContainer" unique_id=1900530577]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/background = SubResource("StyleBoxFlat_ski2k")
+theme_override_styles/fill = SubResource("StyleBoxFlat_l2yrn")
+value = 50.0
+show_percentage = false
+
+[node name="UpgradeButton" type="Button" parent="Menu" unique_id=310273905]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -241.0
+offset_top = -205.0
+offset_right = 247.0
+offset_bottom = 35.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxTexture_5ybcx")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_5ybcx")
+theme_override_styles/hover = SubResource("StyleBoxTexture_5ybcx")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_lwlwk")
+theme_override_styles/focus = SubResource("StyleBoxTexture_5ybcx")
+
+[node name="UpgradeLabel" type="Label" parent="Menu/UpgradeButton" unique_id=45094651]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -136.0
+offset_top = -29.0
+offset_right = 136.0
+offset_bottom = 45.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0.101960786, 0.43529412, 0.07058824, 1)
+theme_override_colors/font_outline_color = Color(0.101960786, 0.43529412, 0.07058824, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("2_cdaqh")
+theme_override_font_sizes/font_size = 60
+text = "UPGRADE"
+
+[node name="TextureRect" type="TextureRect" parent="Menu/UpgradeButton" unique_id=1945444476]
+modulate = Color(1, 1, 1, 0.6745098)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -175.0
+offset_top = 29.0
+offset_right = 401.0
+offset_bottom = 125.0
+grow_horizontal = 2
+scale = Vector2(0.615, 0.78)
+texture = SubResource("AtlasTexture_ms1go")
+
+[node name="Cost" type="HBoxContainer" parent="Menu/UpgradeButton" unique_id=463155547]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -78.0
+offset_top = 42.0
+offset_right = 183.0
+offset_bottom = 116.0
+grow_horizontal = 2
+scale = Vector2(0.64, 0.64)
+theme_override_constants/separation = 12
+
+[node name="CoinIcon" type="TextureRect" parent="Menu/UpgradeButton/Cost" unique_id=1202453130]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("5_ueedh")
+stretch_mode = 3
+
+[node name="Cost" type="Label" parent="Menu/UpgradeButton/Cost" unique_id=171777850]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.8, 0.16078432, 1)
+theme_override_colors/font_outline_color = Color(0.35709095, 0.197027, 1.4439226e-07, 1)
+theme_override_constants/outline_size = 15
+theme_override_fonts/font = ExtResource("2_cdaqh")
+theme_override_font_sizes/font_size = 60
+text = "Cost: 0"
+
+[node name="ExitButton" type="Button" parent="Menu" unique_id=893307420]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -134.99994
+offset_top = -18.000004
+offset_right = -126.99994
+offset_bottom = -10.000004
+grow_horizontal = 0
+scale = Vector2(20, 20)
+theme_override_styles/normal = SubResource("StyleBoxTexture_ueedh")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_aqm54")
+theme_override_styles/hover = SubResource("StyleBoxTexture_lwlwk")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_ms1go")
+theme_override_styles/focus = SubResource("StyleBoxTexture_e870k")
+
+[connection signal="pressed" from="Menu/UpgradeButton" to="." method="_on_upgrade_button_pressed"]
+[connection signal="pressed" from="Menu/ExitButton" to="." method="_on_exit_button_pressed"]

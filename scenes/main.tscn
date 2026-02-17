@@ -1,0 +1,212 @@
+[gd_scene format=3 uid="uid://bwmnuuanmulu7"]
+
+[ext_resource type="Script" uid="uid://q6ks8ala520m" path="res://scripts/main_menu.gd" id="1_o6xl0"]
+[ext_resource type="PackedScene" uid="uid://cuunyergn27fs" path="res://scenes/rod_upgrade.tscn" id="2_jyhfs"]
+[ext_resource type="Texture2D" uid="uid://bdb1iw8mi66tl" path="res://assets/art/background/mainmenu(1).jpg" id="2_tipki"]
+[ext_resource type="Texture2D" uid="uid://b7c35ie6oam2h" path="res://assets/art/menu/2.png" id="3_85g3d"]
+[ext_resource type="PackedScene" uid="uid://c7veco5r20d7q" path="res://scenes/setting.tscn" id="3_tbgi4"]
+[ext_resource type="Texture2D" uid="uid://bhcr73uqhtf6y" path="res://assets/art/menu/menu2.png" id="4_choun"]
+[ext_resource type="FontFile" uid="uid://bssopqtd7xymm" path="res://assets/fonts/Fredoka-Bold.ttf" id="5_ya4ey"]
+[ext_resource type="PackedScene" uid="uid://cvp7f4xkjk7wl" path="res://scenes/level_select.tscn" id="8_tipki"]
+[ext_resource type="AudioStream" uid="uid://bn8owih3ddbr3" path="res://assets/audio/main_menu_music.mp3" id="9_85g3d"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tbmy8"]
+texture = ExtResource("3_85g3d")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wu84c"]
+atlas = ExtResource("4_choun")
+region = Rect2(1312, 488, 824, 584)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ln24"]
+atlas = ExtResource("4_choun")
+region = Rect2(784, 1464, 392, 184)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8ln24"]
+texture = SubResource("AtlasTexture_8ln24")
+
+[node name="Main" type="Node" unique_id=1928398240]
+script = ExtResource("1_o6xl0")
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1141017164]
+
+[node name="MainMenu" type="Control" parent="UI" unique_id=2084233038]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="UI/MainMenu" unique_id=1117581506]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_tipki")
+
+[node name="Menu" type="Panel" parent="UI/MainMenu" unique_id=886803565]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -440.0
+offset_top = -718.0
+offset_right = 440.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_tbmy8")
+
+[node name="TextureRect" type="TextureRect" parent="UI/MainMenu/Menu" unique_id=139110888]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -412.0
+offset_top = -301.0
+offset_right = 412.0
+offset_bottom = 283.0
+grow_horizontal = 2
+scale = Vector2(0.72, 0.72)
+pivot_offset = Vector2(412, 257)
+texture = SubResource("AtlasTexture_wu84c")
+
+[node name="Buttons" type="VBoxContainer" parent="UI/MainMenu/Menu" unique_id=1805410657]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 194.0
+offset_top = 211.0
+offset_right = -201.0
+offset_bottom = -177.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="PlayButton" type="Button" parent="UI/MainMenu/Menu/Buttons" unique_id=2116021511]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.92099476, 0.9209946, 0.9209946, 1)
+theme_override_fonts/font = ExtResource("5_ya4ey")
+theme_override_font_sizes/font_size = 55
+theme_override_styles/normal = SubResource("StyleBoxTexture_8ln24")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8ln24")
+theme_override_styles/hover = SubResource("StyleBoxTexture_8ln24")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_8ln24")
+theme_override_styles/focus = SubResource("StyleBoxTexture_8ln24")
+
+[node name="Label" type="Label" parent="UI/MainMenu/Menu/Buttons/PlayButton" unique_id=1716225183]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -156.0
+offset_top = -46.0
+offset_right = 156.0
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("5_ya4ey")
+theme_override_font_sizes/font_size = 50
+text = "START GAME"
+
+[node name="UpgradeButton" type="Button" parent="UI/MainMenu/Menu/Buttons" unique_id=1933283989]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.92099476, 0.9209946, 0.9209946, 1)
+theme_override_fonts/font = ExtResource("5_ya4ey")
+theme_override_font_sizes/font_size = 55
+theme_override_styles/normal = SubResource("StyleBoxTexture_8ln24")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8ln24")
+theme_override_styles/hover = SubResource("StyleBoxTexture_8ln24")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_8ln24")
+theme_override_styles/focus = SubResource("StyleBoxTexture_8ln24")
+
+[node name="Label" type="Label" parent="UI/MainMenu/Menu/Buttons/UpgradeButton" unique_id=1954748497]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -168.5
+offset_top = -46.0
+offset_right = 168.5
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("5_ya4ey")
+theme_override_font_sizes/font_size = 50
+text = "UPGRADE ROD"
+
+[node name="SettingButton" type="Button" parent="UI/MainMenu/Menu/Buttons" unique_id=538678522]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.92099476, 0.9209946, 0.9209946, 1)
+theme_override_fonts/font = ExtResource("5_ya4ey")
+theme_override_font_sizes/font_size = 55
+theme_override_styles/normal = SubResource("StyleBoxTexture_8ln24")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8ln24")
+theme_override_styles/hover = SubResource("StyleBoxTexture_8ln24")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_8ln24")
+theme_override_styles/focus = SubResource("StyleBoxTexture_8ln24")
+
+[node name="Label" type="Label" parent="UI/MainMenu/Menu/Buttons/SettingButton" unique_id=561100521]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -101.5
+offset_top = -46.0
+offset_right = 101.5
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0.025813123, 0.33181137, 0.45101666, 1)
+theme_override_colors/font_outline_color = Color(0.02745098, 0.33333334, 0.4509804, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 20
+theme_override_constants/shadow_outline_size = 10
+theme_override_fonts/font = ExtResource("5_ya4ey")
+theme_override_font_sizes/font_size = 50
+text = "SETTING"
+
+[node name="RodUpgrade" parent="UI" unique_id=104326944 instance=ExtResource("2_jyhfs")]
+visible = false
+
+[node name="Setting" parent="UI" unique_id=1694985216 instance=ExtResource("3_tbgi4")]
+visible = false
+
+[node name="LevelSelect" parent="UI" unique_id=1309174472 instance=ExtResource("8_tipki")]
+visible = false
+
+[node name="Music" type="AudioStreamPlayer2D" parent="." unique_id=28351972]
+stream = ExtResource("9_85g3d")
+autoplay = true
+bus = &"Music"
+
+[connection signal="pressed" from="UI/MainMenu/Menu/Buttons/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="UI/MainMenu/Menu/Buttons/UpgradeButton" to="." method="_on_upgrade_button_pressed"]
+[connection signal="pressed" from="UI/MainMenu/Menu/Buttons/SettingButton" to="." method="_on_setting_button_pressed"]
