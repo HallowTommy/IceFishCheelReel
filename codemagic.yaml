@@ -112,12 +112,36 @@ workflows:
             -exportPath "ipa" \
             -exportOptionsPlist "$CM_BUILD_DIR/ExportOptions.plist"
 
-    publishing:
-      app_store_connect:
-        api_key: ASC_KEY
-        key_id: $APPSTORE_KEY_ID
-        issuer_id: $APPSTORE_ISSUER_ID
-        submit_to_testflight: true
+      - name: Upload to App Store Connect
+        script: |
+          set -e
+
+          # Проверим, что ipa существует
+          ls -la ipa || true
+          test -f ipa/ios.ipa
+
+          # Запишем приватный ключ из переменной в файл (PEM/.p8)
+          cat > /tmp/AuthKey.p8 <<'EOF'
+          $APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY
+          EOF
+
+          # На случай, если Codemagic хранит ключ с \n как текст — нормализуем
+          python3 - <<'PY'
+          import pathlib
+          p = pathlib.Path("/tmp/AuthKey.p8")
+          s = p.read_text()
+          # если внутри были literal "\n" — заменим на реальные переводы строк
+          s = s.replace("\\n", "\n")
+          p.write_text(s.strip() + "\n")
+          PY
+
+          # Публикуем в TestFlight
+          app-store-connect publish \
+            --path ipa/ios.ipa \
+            --key-id "$APPSTORE_KEY_ID" \
+            --issuer-id "$APPSTORE_ISSUER_ID" \
+            --private-key /tmp/AuthKey.p8 \
+            --testflight
 
     artifacts:
       - ipa/*.ipa
