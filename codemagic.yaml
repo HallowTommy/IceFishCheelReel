@@ -68,47 +68,43 @@ workflows:
         script: |
           set -e
 
-          set -e
+          XCODEPROJ=$(find ./build -maxdepth 10 -name "*.xcodeproj" | head -n 1)
+          echo "Project: $XCODEPROJ"
+          [ -n "$XCODEPROJ" ]
 
-XCODEPROJ=$(find ./build -maxdepth 10 -name "*.xcodeproj" | head -n 1)
-echo "Project: $XCODEPROJ"
-[ -n "$XCODEPROJ" ]
+          SCHEME=$(xcodebuild -list -project "$XCODEPROJ" \
+            | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}' \
+            | xargs)
+          echo "Scheme: $SCHEME"
+          [ -n "$SCHEME" ]
 
-SCHEME=$(xcodebuild -list -project "$XCODEPROJ" \
-  | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}' \
-  | xargs)
-echo "Scheme: $SCHEME"
-[ -n "$SCHEME" ]
+          # применяем профили из ios_signing (убирает конфликт signing)
+          xcode-project use-profiles --project "$XCODEPROJ"
 
-# 1) Применяем provisioning profile(и), которые Codemagic уже установил из ios_signing
-# Это как раз убирает конфликт “automatic dev” vs “manual distribution”
-xcode-project use-profiles --project "$XCODEPROJ"
+          xcodebuild \
+            -project "$XCODEPROJ" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath "$CM_BUILD_DIR/App.xcarchive" \
+            archive
 
-# 2) Архивируем
-xcodebuild \
-  -project "$XCODEPROJ" \
-  -scheme "$SCHEME" \
-  -configuration Release \
-  -sdk iphoneos \
-  -archivePath "$CM_BUILD_DIR/App.xcarchive" \
-  archive
+          cat > "$CM_BUILD_DIR/ExportOptions.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store-connect</string>
+          </dict>
+          </plist>
+          EOF
 
-# 3) Экспорт IPA
-cat > "$CM_BUILD_DIR/ExportOptions.plist" <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>method</key>
-  <string>app-store-connect</string>
-</dict>
-</plist>
-EOF
+          xcodebuild -exportArchive \
+            -archivePath "$CM_BUILD_DIR/App.xcarchive" \
+            -exportPath "$CM_BUILD_DIR/ipa" \
+            -exportOptionsPlist "$CM_BUILD_DIR/ExportOptions.plist"
 
-xcodebuild -exportArchive \
-  -archivePath "$CM_BUILD_DIR/App.xcarchive" \
-  -exportPath "$CM_BUILD_DIR/ipa" \
-  -exportOptionsPlist "$CM_BUILD_DIR/ExportOptions.plist"
 
     artifacts:
       - ipa/*.ipa
