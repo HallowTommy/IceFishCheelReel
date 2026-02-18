@@ -118,7 +118,6 @@ workflows:
         key_id: $APPSTORE_KEY_ID
         issuer_id: $APPSTORE_ISSUER_ID
         submit_to_testflight: true
-        ipa: ipa/*.ipa
 
     artifacts:
       - ipa/*.ipa
