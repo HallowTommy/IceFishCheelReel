@@ -114,7 +114,7 @@ workflows:
 
     publishing:
       app_store_connect:
-        api_key: CM1
+        api_key: ASC_KEY
         key_id: $APPSTORE_KEY_ID
         issuer_id: $APPSTORE_ISSUER_ID
         submit_to_testflight: true
