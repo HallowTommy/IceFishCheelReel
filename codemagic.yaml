@@ -125,31 +125,45 @@ workflows:
           echo "ISSUER_ID prefix: ${APPSTORE_ISSUER_ID:0:8}..."
           echo "ASC_PRIVATE_KEY length: ${#ASC_PRIVATE_KEY}"
 
-          # если ключ пустой — сразу понятная ошибка
           if [ -z "$ASC_PRIVATE_KEY" ]; then
-            echo "ERROR: ASC_PRIVATE_KEY is empty. Add it as a Secret env var (or in ICEFISH group)."
+            echo "ERROR: ASC_PRIVATE_KEY is empty."
             exit 1
           fi
 
-          printf "%s" "$ASC_PRIVATE_KEY" > /tmp/AuthKey.p8
-
+          # 1) нормализуем строку из переменной
           python3 - <<'PY'
-          import pathlib
-          p = pathlib.Path("/tmp/AuthKey.p8")
-          s = p.read_text()
-          s = s.replace("\\n", "\n").replace("\r\n", "\n").strip() + "\n"
-          p.write_text(s)
+          import re, textwrap, pathlib, os
+          s = os.environ["ASC_PRIVATE_KEY"]
+          s = s.replace("\\n", "\n").replace("\r\n", "\n").strip()
+
+          out = pathlib.Path("/tmp/AuthKey.p8")
+
+          if "BEGIN PRIVATE KEY" in s:
+              # уже PEM — просто нормализуем и пишем
+              out.write_text(s + "\n")
+          else:
+              # похоже на "голый" base64 — делаем PEM обёртку
+              b64 = re.sub(r"\s+", "", s)
+              wrapped = "\n".join(textwrap.wrap(b64, 64))
+              pem = "-----BEGIN PRIVATE KEY-----\n" + wrapped + "\n-----END PRIVATE KEY-----\n"
+              out.write_text(pem)
           PY
 
-          head -n 1 /tmp/AuthKey.p8
+          # 2) проверяем, что PEM валидный (не печатаем ключ)
+          if ! openssl pkey -in /tmp/AuthKey.p8 -noout >/dev/null 2>&1; then
+            echo "ERROR: /tmp/AuthKey.p8 is still not a valid private key."
+            echo "Tip: re-paste the .p8 content into ASC_PRIVATE_KEY exactly as in file."
+            exit 2
+          fi
+          echo "Private key OK (openssl validated)."
 
+          # 3) грузим в TestFlight
           app-store-connect publish \
             --path ios.ipa \
             --key-id "$APPSTORE_KEY_ID" \
             --issuer-id "$APPSTORE_ISSUER_ID" \
             --private-key /tmp/AuthKey.p8 \
             --testflight
-
 
     artifacts:
       - ipa/*.ipa
