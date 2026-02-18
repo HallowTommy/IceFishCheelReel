@@ -105,6 +105,12 @@ workflows:
       - ipa/*.ipa
       - build/**/*
 
+    - name: Debug vars
+      script: |
+        echo "KEY ID: $APPSTORE_KEY_ID"
+        echo "ISSUER: $APPSTORE_ISSUER_ID"
+        echo "KEY LENGTH: ${#ASC_PRIVATE_KEY}"
+
     publishing:
       app_store_connect:
         key_id: $APPSTORE_KEY_ID
