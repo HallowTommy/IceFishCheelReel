@@ -18,27 +18,38 @@ workflows:
 
           echo "Downloading Godot..."
           curl -L --fail -o godot.zip \
-          https://github.com/godotengine/godot/releases/download/4.6.1-stable/Godot_v4.6.1-stable_macos.universal.zip
+            https://github.com/godotengine/godot/releases/download/4.6.1-stable/Godot_v4.6.1-stable_macos.universal.zip
 
           unzip -o godot.zip
-          chmod +x Godot*.app/Contents/MacOS/Godot*
+          chmod +x Godot*.app/Contents/MacOS/Godot* || true
 
       - name: Download export templates
         script: |
           set -e
+          mkdir -p tools
           cd tools
 
           echo "Downloading templates..."
           curl -L --fail -o templates.tpz \
-          https://github.com/godotengine/godot/releases/download/4.6.1-stable/Godot_v4.6.1-stable_export_templates.tpz
+            https://github.com/godotengine/godot/releases/download/4.6.1-stable/Godot_v4.6.1-stable_export_templates.tpz
 
-          mkdir -p "$HOME/Library/Application Support/Godot/export_templates/4.6.1.stable"
+          # Godot ожидает zip-шаблоны прямо в папке версии (например ios.zip)
+          TEMPL_DIR="$HOME/Library/Application Support/Godot/export_templates/4.6.1.stable"
+          mkdir -p "$TEMPL_DIR"
 
+          rm -rf templates || true
           unzip -o templates.tpz
 
-          # Перемещаем ios.zip туда, куда Godot ожидает
-          mv templates/* "$HOME/Library/Application Support/Godot/export_templates/4.6.1.stable/"
+          # Внутри tpz обычно есть папка templates/ с ios.zip и т.п.
+          if [ -d "templates" ]; then
+            mv -f templates/* "$TEMPL_DIR/"
+          else
+            # на всякий случай, если структура другая
+            mv -f ./*.zip "$TEMPL_DIR/" || true
+          fi
 
+          echo "Templates installed. Contents:"
+          ls -la "$TEMPL_DIR" || true
 
       - name: Export iOS project
         script: |
@@ -47,35 +58,41 @@ workflows:
           mkdir -p "./build/ios"
 
           GODOT_BIN=$(find tools -type f -path "*Godot*.app/Contents/MacOS/*" | head -n 1)
+          echo "Using Godot: $GODOT_BIN"
+
           "$GODOT_BIN" --headless --path . --export-release "iOS" "./build/ios"
 
-          echo "Find xcodeproj:"
-          find ./build -name "*.xcodeproj" -maxdepth 5 -print || true
-          echo "List build:"
-          find ./build -maxdepth 3 -type d -print || true
-
-
-      - name: Debug export folder
-        script: |
-          echo "Listing build directory"
-          ls -R build
+          echo "Export directory tree:"
+          find ./build -maxdepth 4 -type d -print || true
+          echo "Xcode projects found:"
+          find ./build -maxdepth 6 -name "*.xcodeproj" -print || true
 
       - name: Build IPA
         script: |
           set -e
-          cd build/ios
 
-XCODEPROJ=$(find ./build -name "*.xcodeproj" | head -n 1)
-echo "Project: $XCODEPROJ"
-if [ -z "$XCODEPROJ" ]; then
-  echo "No .xcodeproj found!"
-  find ./build -maxdepth 5 -type f -print
-  exit 1
-fi
+          # Ищем .xcodeproj где бы он ни оказался внутри ./build
+          XCODEPROJ=$(find ./build -maxdepth 8 -name "*.xcodeproj" | head -n 1)
+          echo "Project: $XCODEPROJ"
 
+          if [ -z "$XCODEPROJ" ]; then
+            echo "No .xcodeproj found after export!"
+            echo "Files under ./build:"
+            find ./build -maxdepth 8 -type f -print || true
+            exit 1
+          fi
+
+          # Узнаём первую доступную схему
+          xcodebuild -list -project "$XCODEPROJ"
           SCHEME=$(xcodebuild -list -project "$XCODEPROJ" | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}')
           echo "Scheme: $SCHEME"
 
+          if [ -z "$SCHEME" ]; then
+            echo "No scheme found in project!"
+            exit 1
+          fi
+
+          # Архивируем
           xcodebuild \
             -project "$XCODEPROJ" \
             -scheme "$SCHEME" \
@@ -83,6 +100,7 @@ fi
             -archivePath "$CM_BUILD_DIR/App.xcarchive" \
             archive
 
+          # Экспорт IPA (под App Store). На этом шаге позже может потребоваться signing.
           cat > "$CM_BUILD_DIR/ExportOptions.plist" <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -103,3 +121,4 @@ fi
 
     artifacts:
       - ipa/*.ipa
+      - build/**/*
