@@ -102,7 +102,7 @@ workflows:
 
           xcodebuild -exportArchive \
             -archivePath "$CM_BUILD_DIR/App.xcarchive" \
-            -exportPath "$CM_BUILD_DIR/ipa" \
+            -exportPath "ipa" \
             -exportOptionsPlist "$CM_BUILD_DIR/ExportOptions.plist"
 
 
