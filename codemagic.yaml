@@ -50,6 +50,11 @@ workflows:
 
           "$GODOT_BIN" --headless --path . --export-release "iOS" "build/ios"
 
+      - name: Debug export folder
+        script: |
+          echo "Listing build directory"
+          ls -R build
+
       - name: Build IPA
         script: |
           set -e
