@@ -5,6 +5,8 @@ workflows:
     max_build_duration: 60
 
     environment:
+      groups:
+    - ICEFISH
       vars:
         GODOT_TEMPL_VERSION_DIR: "4.6.1.stable"
         EXPORT_PRESET: "iOS"
