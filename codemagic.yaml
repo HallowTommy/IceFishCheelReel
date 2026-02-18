@@ -6,7 +6,7 @@ workflows:
 
     environment:
       groups:
-        - ICEFISH   # твоя группа с сертификатом и профилем
+        - ICEFISH
 
       vars:
         GODOT_VERSION: "4.6.1-stable"
@@ -21,7 +21,6 @@ workflows:
           - ICEFISH_APPSTORE_PROFILE
 
     scripts:
-
       - name: Install dependencies
         script: |
           brew install curl unzip || true
@@ -33,7 +32,7 @@ workflows:
           cd tools
 
           curl -L -o godot.zip \
-          https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_macos.universal.zip
+            https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_macos.universal.zip
 
           unzip -o godot.zip
           chmod +x Godot*.app/Contents/MacOS/Godot*
@@ -44,7 +43,7 @@ workflows:
           cd tools
 
           curl -L -o templates.tpz \
-          https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz
+            https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz
 
           TEMPL_DIR="$HOME/Library/Application Support/Godot/export_templates/${GODOT_TEMPL_VERSION_DIR}"
           mkdir -p "$TEMPL_DIR"
@@ -75,6 +74,8 @@ workflows:
             | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}' \
             | xargs)
 
+          echo "Using scheme: $SCHEME"
+
           xcode-project use-profiles --project "$XCODEPROJ"
 
           xcodebuild \
@@ -82,13 +83,10 @@ workflows:
             -scheme "$SCHEME" \
             -configuration Release \
             -sdk iphoneos \
-            -archivePath $CM_BUILD_DIR/App.xcarchive \
+            -archivePath "$CM_BUILD_DIR/App.xcarchive" \
             archive
 
-          xcodebuild -exportArchive \
-            -archivePath $CM_BUILD_DIR/App.xcarchive \
-            -exportPath ipa \
-            -exportOptionsPlist <(cat <<EOF
+          cat > exportOptions.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
           "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -99,17 +97,14 @@ workflows:
           </dict>
           </plist>
           EOF
-          )
 
-      - name: Debug vars
-      script: |
-      echo "KEY ID: $APPSTORE_KEY_ID"
-      echo "ISSUER: $APPSTORE_ISSUER_ID"
-      echo "KEY LENGTH: ${#ASC_PRIVATE_KEY}"
+          xcodebuild -exportArchive \
+            -archivePath "$CM_BUILD_DIR/App.xcarchive" \
+            -exportPath ipa \
+            -exportOptionsPlist exportOptions.plist
 
     artifacts:
       - ipa/*.ipa
-      - build/**/*
 
     publishing:
       app_store_connect:
