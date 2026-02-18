@@ -115,26 +115,24 @@ workflows:
         script: |
           set -e
 
-          # Проверим, что ipa существует
           ls -la ipa || true
           test -f ipa/ios.ipa
 
-          # Запишем приватный ключ из переменной в файл (PEM/.p8)
-          cat > /tmp/AuthKey.p8 <<'EOF'
-          $APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY
-          EOF
+          # Записываем ключ из secret env var в файл
+          printf "%s" "$ASC_PRIVATE_KEY" > /tmp/AuthKey.p8
 
-          # На случай, если Codemagic хранит ключ с \n как текст — нормализуем
+          # Нормализуем переводы строк (на случай \n и CRLF)
           python3 - <<'PY'
           import pathlib
           p = pathlib.Path("/tmp/AuthKey.p8")
           s = p.read_text()
-          # если внутри были literal "\n" — заменим на реальные переводы строк
-          s = s.replace("\\n", "\n")
-          p.write_text(s.strip() + "\n")
+          s = s.replace("\\n", "\n").replace("\r\n", "\n").strip() + "\n"
+          p.write_text(s)
           PY
 
-          # Публикуем в TestFlight
+          # Быстрая проверка, что файл похож на ключ (без вывода секрета)
+          head -n 1 /tmp/AuthKey.p8 | grep "BEGIN PRIVATE KEY" >/dev/null
+
           app-store-connect publish \
             --path ipa/ios.ipa \
             --key-id "$APPSTORE_KEY_ID" \
