@@ -1,8 +1,14 @@
 workflows:
   ios-godot:
-    name: iOS Godot 4.6.1 Build
+    name: iOS Godot 4.6.1 Build (App Store)
     instance_type: mac_mini_m2
     max_build_duration: 60
+
+    environment:
+      vars:
+        TEAM_ID: "DVPA8W2PW5"
+        EXPORT_PRESET: "iOS"
+        GODOT_TEMPL_VERSION_DIR: "4.6.1.stable"
 
     scripts:
       - name: Install dependencies
@@ -33,18 +39,16 @@ workflows:
           curl -L --fail -o templates.tpz \
             https://github.com/godotengine/godot/releases/download/4.6.1-stable/Godot_v4.6.1-stable_export_templates.tpz
 
-          # Godot ожидает zip-шаблоны прямо в папке версии (например ios.zip)
-          TEMPL_DIR="$HOME/Library/Application Support/Godot/export_templates/4.6.1.stable"
+          TEMPL_DIR="$HOME/Library/Application Support/Godot/export_templates/${GODOT_TEMPL_VERSION_DIR}"
           mkdir -p "$TEMPL_DIR"
 
           rm -rf templates || true
           unzip -o templates.tpz
 
-          # Внутри tpz обычно есть папка templates/ с ios.zip и т.п.
+          # Внутри tpz есть папка templates/ с ios.zip и т.п.
           if [ -d "templates" ]; then
             mv -f templates/* "$TEMPL_DIR/"
           else
-            # на всякий случай, если структура другая
             mv -f ./*.zip "$TEMPL_DIR/" || true
           fi
 
@@ -60,20 +64,17 @@ workflows:
           GODOT_BIN=$(find tools -type f -path "*Godot*.app/Contents/MacOS/*" | head -n 1)
           echo "Using Godot: $GODOT_BIN"
 
-          "$GODOT_BIN" --headless --path . --export-release "iOS" "./build/ios"
+          "$GODOT_BIN" --headless --path . --export-release "${EXPORT_PRESET}" "./build/ios"
 
-          echo "Export directory tree:"
-          find ./build -maxdepth 4 -type d -print || true
           echo "Xcode projects found:"
-          find ./build -maxdepth 6 -name "*.xcodeproj" -print || true
+          find ./build -maxdepth 8 -name "*.xcodeproj" -print || true
 
-      - name: Build IPA
+      - name: Build Archive (Automatic signing)
         script: |
           set -e
 
           XCODEPROJ=$(find ./build -maxdepth 8 -name "*.xcodeproj" | head -n 1)
           echo "Project: $XCODEPROJ"
-
           if [ -z "$XCODEPROJ" ]; then
             echo "No .xcodeproj found after export!"
             find ./build -maxdepth 8 -type f -print || true
@@ -85,20 +86,26 @@ workflows:
           SCHEME=$(xcodebuild -list -project "$XCODEPROJ" \
             | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}' \
             | xargs)
-
           echo "Scheme: $SCHEME"
-
           if [ -z "$SCHEME" ]; then
             echo "No scheme found!"
             exit 1
           fi
 
+          # ВАЖНО: не указываем Apple Distribution вручную — иначе снова конфликт.
           xcodebuild \
             -project "$XCODEPROJ" \
             -scheme "$SCHEME" \
             -configuration Release \
+            -sdk iphoneos \
             -archivePath "$CM_BUILD_DIR/App.xcarchive" \
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
             archive
+
+      - name: Export IPA (App Store)
+        script: |
+          set -e
 
           cat > "$CM_BUILD_DIR/ExportOptions.plist" <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
@@ -109,6 +116,8 @@ workflows:
             <string>app-store</string>
             <key>signingStyle</key>
             <string>automatic</string>
+            <key>teamID</key>
+            <string>${TEAM_ID}</string>
           </dict>
           </plist>
           EOF
@@ -117,7 +126,6 @@ workflows:
             -archivePath "$CM_BUILD_DIR/App.xcarchive" \
             -exportPath "$CM_BUILD_DIR/ipa" \
             -exportOptionsPlist "$CM_BUILD_DIR/ExportOptions.plist"
-
 
     artifacts:
       - ipa/*.ipa
