@@ -101,11 +101,11 @@ workflows:
           EOF
           )
 
-    - name: Debug vars
+      - name: Debug vars
       script: |
-        echo "KEY ID: $APPSTORE_KEY_ID"
-        echo "ISSUER: $APPSTORE_ISSUER_ID"
-        echo "KEY LENGTH: ${#ASC_PRIVATE_KEY}"
+      echo "KEY ID: $APPSTORE_KEY_ID"
+      echo "ISSUER: $APPSTORE_ISSUER_ID"
+      echo "KEY LENGTH: ${#ASC_PRIVATE_KEY}"
 
     artifacts:
       - ipa/*.ipa
