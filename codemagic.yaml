@@ -9,10 +9,11 @@ workflows:
         GODOT_TEMPL_VERSION_DIR: "4.6.1.stable"
         EXPORT_PRESET: "iOS"
       ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.cerentaner.icefishadventure
         provisioning_profiles:
           - ICEFISH_APPSTORE_PROFILE
+        # если в Codemagic сертификат тоже с reference name — добавь сюда:
+        # certificates:
+        #   - ICEFISH_DIST_CERT
 
     scripts:
       - name: Install dependencies
@@ -84,7 +85,7 @@ workflows:
             exit 1
           fi
 
-          # ВАЖНО: не задаем CODE_SIGN_* вручную — Codemagic сам подставит сертификат+профиль
+          # не задаём CODE_SIGN_* вручную — Codemagic подставит сертификат+профиль
           xcodebuild \
             -project "$XCODEPROJ" \
             -scheme "$SCHEME" \
