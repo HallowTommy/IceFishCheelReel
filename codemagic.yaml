@@ -43,12 +43,17 @@ workflows:
       - name: Export iOS project
         script: |
           set -e
-          mkdir -p build/ios
+
+          echo "Exporting iOS..."
+          mkdir -p build
 
           GODOT_BIN=$(find tools -type f -path "*Godot*.app/Contents/MacOS/*" | head -n 1)
-          echo "Using Godot: $GODOT_BIN"
 
-          "$GODOT_BIN" --headless --path . --export-release "iOS" "build/ios"
+          "$GODOT_BIN" --headless --path . --export-release "iOS" "build"
+
+          echo "Listing build directory:"
+          find build -maxdepth 4 -type d -print
+          find build -maxdepth 4 -name "*.xcodeproj" -print
 
       - name: Debug export folder
         script: |
