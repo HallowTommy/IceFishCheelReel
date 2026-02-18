@@ -1,85 +1,80 @@
 workflows:
-  ios-godot:
-    name: iOS Godot 4.6.1 Build (App Store)
+  ios-godot-appstore:
+    name: iOS Godot 4.6.1 → App Store
     instance_type: mac_mini_m2
     max_build_duration: 60
 
     environment:
       groups:
-        - ICEFISH
+        - ICEFISH   # твоя группа с сертификатом и профилем
+
       vars:
+        GODOT_VERSION: "4.6.1-stable"
         GODOT_TEMPL_VERSION_DIR: "4.6.1.stable"
         EXPORT_PRESET: "iOS"
+
         APPSTORE_KEY_ID: "HJVGKL3JHV"
         APPSTORE_ISSUER_ID: "8dc9f774-55a2-40f2-ae00-9167b7c5bf1f"
+
       ios_signing:
         provisioning_profiles:
           - ICEFISH_APPSTORE_PROFILE
 
     scripts:
+
       - name: Install dependencies
         script: |
-          brew update
           brew install curl unzip || true
 
-      - name: Download Godot 4.6.1
+      - name: Download Godot
         script: |
           set -e
           mkdir -p tools
           cd tools
-          curl -L --fail -o godot.zip \
-            https://github.com/godotengine/godot/releases/download/4.6.1-stable/Godot_v4.6.1-stable_macos.universal.zip
-          unzip -o godot.zip
-          chmod +x Godot*.app/Contents/MacOS/Godot* || true
 
-      - name: Download export templates
+          curl -L -o godot.zip \
+          https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_macos.universal.zip
+
+          unzip -o godot.zip
+          chmod +x Godot*.app/Contents/MacOS/Godot*
+
+      - name: Install export templates
         script: |
           set -e
-          mkdir -p tools
           cd tools
-          curl -L --fail -o templates.tpz \
-            https://github.com/godotengine/godot/releases/download/4.6.1-stable/Godot_v4.6.1-stable_export_templates.tpz
+
+          curl -L -o templates.tpz \
+          https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz
 
           TEMPL_DIR="$HOME/Library/Application Support/Godot/export_templates/${GODOT_TEMPL_VERSION_DIR}"
           mkdir -p "$TEMPL_DIR"
 
-          rm -rf templates || true
           unzip -o templates.tpz
-          if [ -d "templates" ]; then
-            mv -f templates/* "$TEMPL_DIR/"
-          else
-            mv -f ./*.zip "$TEMPL_DIR/" || true
-          fi
-
-          echo "Templates installed:"
-          ls -la "$TEMPL_DIR" || true
+          mv templates/* "$TEMPL_DIR/"
 
       - name: Export iOS project
         script: |
           set -e
-          mkdir -p "./build/ios"
+          mkdir -p build/ios
+
           GODOT_BIN=$(find tools -type f -path "*Godot*.app/Contents/MacOS/*" | head -n 1)
-          echo "Using Godot: $GODOT_BIN"
-          "$GODOT_BIN" --headless --path . --export-release "${EXPORT_PRESET}" "./build/ios"
 
-          echo "Xcode projects found:"
-          find ./build -maxdepth 8 -name "*.xcodeproj" -print || true
+          "$GODOT_BIN" --headless \
+            --path . \
+            --export-release "${EXPORT_PRESET}" \
+            build/ios
 
-      - name: Build IPA (Codemagic signing)
+      - name: Build IPA
         script: |
           set -e
 
-          XCODEPROJ=$(find ./build -maxdepth 10 -name "*.xcodeproj" | head -n 1)
-          echo "Project: $XCODEPROJ"
-          [ -n "$XCODEPROJ" ]
+          XCODEPROJ=$(find build -name "*.xcodeproj" | head -n 1)
+          echo "Using project: $XCODEPROJ"
 
           SCHEME=$(xcodebuild -list -project "$XCODEPROJ" \
             | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}' \
             | xargs)
-          echo "Scheme: $SCHEME"
-          [ -n "$SCHEME" ]
 
-          # применяем профили из ios_signing (убирает конфликт signing)
           xcode-project use-profiles --project "$XCODEPROJ"
 
           xcodebuild \
@@ -87,84 +82,32 @@ workflows:
             -scheme "$SCHEME" \
             -configuration Release \
             -sdk iphoneos \
-            -archivePath "$CM_BUILD_DIR/App.xcarchive" \
+            -archivePath $CM_BUILD_DIR/App.xcarchive \
             archive
-          
-          cat > "$CM_BUILD_DIR/ExportOptions.plist" <<EOF
+
+          xcodebuild -exportArchive \
+            -archivePath $CM_BUILD_DIR/App.xcarchive \
+            -exportPath ipa \
+            -exportOptionsPlist <(cat <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+          "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>signingStyle</key>
-            <string>manual</string>
-            <key>provisioningProfiles</key>
-            <dict>
-              <key>com.cerentaner.icefishadventure</key>
-              <string>IceFishProfile</string>
-            </dict>
+              <key>method</key>
+              <string>app-store</string>
           </dict>
           </plist>
           EOF
-
-          xcodebuild -exportArchive \
-            -archivePath "$CM_BUILD_DIR/App.xcarchive" \
-            -exportPath "ipa" \
-            -exportOptionsPlist "$CM_BUILD_DIR/ExportOptions.plist"
-
-      - name: Upload to App Store Connect
-        script: |
-          set -e
-
-          cd ipa
-          ls -la
-          test -f ios.ipa
-
-          echo "KEY_ID: $APPSTORE_KEY_ID"
-          echo "ISSUER_ID prefix: ${APPSTORE_ISSUER_ID:0:8}..."
-          echo "ASC_PRIVATE_KEY length: ${#ASC_PRIVATE_KEY}"
-
-          if [ -z "$ASC_PRIVATE_KEY" ]; then
-            echo "ERROR: ASC_PRIVATE_KEY is empty."
-            exit 1
-          fi
-
-          # 1) нормализуем строку из переменной
-          python3 - <<'PY'
-          import re, textwrap, pathlib, os
-          s = os.environ["ASC_PRIVATE_KEY"]
-          s = s.replace("\\n", "\n").replace("\r\n", "\n").strip()
-
-          out = pathlib.Path("/tmp/AuthKey.p8")
-
-          if "BEGIN PRIVATE KEY" in s:
-              # уже PEM — просто нормализуем и пишем
-              out.write_text(s + "\n")
-          else:
-              # похоже на "голый" base64 — делаем PEM обёртку
-              b64 = re.sub(r"\s+", "", s)
-              wrapped = "\n".join(textwrap.wrap(b64, 64))
-              pem = "-----BEGIN PRIVATE KEY-----\n" + wrapped + "\n-----END PRIVATE KEY-----\n"
-              out.write_text(pem)
-          PY
-
-          # 2) проверяем, что PEM валидный (не печатаем ключ)
-          if ! openssl pkey -in /tmp/AuthKey.p8 -noout >/dev/null 2>&1; then
-            echo "ERROR: /tmp/AuthKey.p8 is still not a valid private key."
-            echo "Tip: re-paste the .p8 content into ASC_PRIVATE_KEY exactly as in file."
-            exit 2
-          fi
-          echo "Private key OK (openssl validated)."
-
-          # 3) грузим в TestFlight
-          app-store-connect publish \
-            --path ios.ipa \
-            --key-id "$APPSTORE_KEY_ID" \
-            --issuer-id "$APPSTORE_ISSUER_ID" \
-            --private-key /tmp/AuthKey.p8 \
-            --testflight
+          )
 
     artifacts:
       - ipa/*.ipa
       - build/**/*
+
+    publishing:
+      app_store_connect:
+        key_id: $APPSTORE_KEY_ID
+        issuer_id: $APPSTORE_ISSUER_ID
+        private_key: $ASC_PRIVATE_KEY
+        submit_to_testflight: true
