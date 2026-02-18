@@ -5,6 +5,9 @@ workflows:
     max_build_duration: 60
 
     environment:
+      vars:
+        GODOT_TEMPL_VERSION_DIR: "4.6.1.stable"
+        EXPORT_PRESET: "iOS"
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.cerentaner.icefishadventure
@@ -46,33 +49,21 @@ workflows:
             mv -f ./*.zip "$TEMPL_DIR/" || true
           fi
 
+          echo "Templates installed:"
+          ls -la "$TEMPL_DIR" || true
+
       - name: Export iOS project
         script: |
           set -e
           mkdir -p "./build/ios"
           GODOT_BIN=$(find tools -type f -path "*Godot*.app/Contents/MacOS/*" | head -n 1)
+          echo "Using Godot: $GODOT_BIN"
           "$GODOT_BIN" --headless --path . --export-release "${EXPORT_PRESET}" "./build/ios"
+
+          echo "Xcode projects found:"
           find ./build -maxdepth 8 -name "*.xcodeproj" -print || true
 
-      - name: Fix signing settings in Xcode project
-        script: |
-          set -e
-          PBXPROJ=$(find ./build -name "project.pbxproj" -maxdepth 10 | head -n 1)
-          echo "PBXPROJ: $PBXPROJ"
-          if [ -z "$PBXPROJ" ]; then
-            echo "No project.pbxproj found!"
-            find ./build -maxdepth 10 -type f -print || true
-            exit 1
-          fi
-
-          # Убираем жестко прописанный Apple Distribution, чтобы не конфликтовал с Automatic signing
-          perl -0777 -i -pe 's/CODE_SIGN_IDENTITY(\[[^\]]*\])?\s*=\s*"Apple Distribution";/CODE_SIGN_IDENTITY$1 = "";/g' "$PBXPROJ"
-          perl -0777 -i -pe 's/CODE_SIGN_IDENTITY(\[[^\]]*\])?\s*=\s*Apple Distribution;/CODE_SIGN_IDENTITY$1 = "";/g' "$PBXPROJ"
-
-          echo "Signing lines after patch (preview):"
-          grep -n "CODE_SIGN_IDENTITY" "$PBXPROJ" | head -n 20 || true
-
-      - name: Build Archive (Automatic signing)
+      - name: Build IPA (Codemagic signing)
         script: |
           set -e
 
@@ -80,6 +71,7 @@ workflows:
           echo "Project: $XCODEPROJ"
           if [ -z "$XCODEPROJ" ]; then
             echo "No .xcodeproj found!"
+            find ./build -maxdepth 10 -type f -print || true
             exit 1
           fi
 
@@ -92,31 +84,22 @@ workflows:
             exit 1
           fi
 
+          # ВАЖНО: не задаем CODE_SIGN_* вручную — Codemagic сам подставит сертификат+профиль
           xcodebuild \
             -project "$XCODEPROJ" \
             -scheme "$SCHEME" \
             -configuration Release \
             -sdk iphoneos \
             -archivePath "$CM_BUILD_DIR/App.xcarchive" \
-            CODE_SIGN_STYLE=Automatic \
-            DEVELOPMENT_TEAM="$TEAM_ID" \
-            CODE_SIGN_IDENTITY="" \
             archive
 
-      - name: Export IPA (App Store)
-        script: |
-          set -e
           cat > "$CM_BUILD_DIR/ExportOptions.plist" <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
             <key>method</key>
-            <string>app-store</string>
-            <key>signingStyle</key>
-            <string>automatic</string>
-            <key>teamID</key>
-            <string>${TEAM_ID}</string>
+            <string>app-store-connect</string>
           </dict>
           </plist>
           EOF
