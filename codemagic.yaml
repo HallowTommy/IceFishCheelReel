@@ -5,11 +5,11 @@ workflows:
     max_build_duration: 60
 
     environment:
-      groups:
-        - ICEFISH
       vars:
         GODOT_TEMPL_VERSION_DIR: "4.6.1.stable"
         EXPORT_PRESET: "iOS"
+        APPSTORE_KEY_ID: "HJVGKL3JHV"
+        APPSTORE_ISSUER_ID: "8dc9f774-55a2-40f2-ae00-9167b7c5bf1f"
       ios_signing:
         provisioning_profiles:
           - ICEFISH_APPSTORE_PROFILE
