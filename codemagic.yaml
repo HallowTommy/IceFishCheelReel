@@ -21,11 +21,8 @@ workflows:
           set -e
           mkdir -p tools
           cd tools
-
-          echo "Downloading Godot..."
           curl -L --fail -o godot.zip \
             https://github.com/godotengine/godot/releases/download/4.6.1-stable/Godot_v4.6.1-stable_macos.universal.zip
-
           unzip -o godot.zip
           chmod +x Godot*.app/Contents/MacOS/Godot* || true
 
@@ -34,8 +31,6 @@ workflows:
           set -e
           mkdir -p tools
           cd tools
-
-          echo "Downloading templates..."
           curl -L --fail -o templates.tpz \
             https://github.com/godotengine/godot/releases/download/4.6.1-stable/Godot_v4.6.1-stable_export_templates.tpz
 
@@ -44,44 +39,48 @@ workflows:
 
           rm -rf templates || true
           unzip -o templates.tpz
-
-          # Внутри tpz есть папка templates/ с ios.zip и т.п.
           if [ -d "templates" ]; then
             mv -f templates/* "$TEMPL_DIR/"
           else
             mv -f ./*.zip "$TEMPL_DIR/" || true
           fi
 
-          echo "Templates installed. Contents:"
-          ls -la "$TEMPL_DIR" || true
-
       - name: Export iOS project
         script: |
           set -e
-          echo "Exporting iOS..."
           mkdir -p "./build/ios"
-
           GODOT_BIN=$(find tools -type f -path "*Godot*.app/Contents/MacOS/*" | head -n 1)
-          echo "Using Godot: $GODOT_BIN"
-
           "$GODOT_BIN" --headless --path . --export-release "${EXPORT_PRESET}" "./build/ios"
-
-          echo "Xcode projects found:"
           find ./build -maxdepth 8 -name "*.xcodeproj" -print || true
+
+      - name: Fix signing settings in Xcode project
+        script: |
+          set -e
+          PBXPROJ=$(find ./build -name "project.pbxproj" -maxdepth 10 | head -n 1)
+          echo "PBXPROJ: $PBXPROJ"
+          if [ -z "$PBXPROJ" ]; then
+            echo "No project.pbxproj found!"
+            find ./build -maxdepth 10 -type f -print || true
+            exit 1
+          fi
+
+          # Убираем жестко прописанный Apple Distribution, чтобы не конфликтовал с Automatic signing
+          perl -0777 -i -pe 's/CODE_SIGN_IDENTITY(\[[^\]]*\])?\s*=\s*"Apple Distribution";/CODE_SIGN_IDENTITY$1 = "";/g' "$PBXPROJ"
+          perl -0777 -i -pe 's/CODE_SIGN_IDENTITY(\[[^\]]*\])?\s*=\s*Apple Distribution;/CODE_SIGN_IDENTITY$1 = "";/g' "$PBXPROJ"
+
+          echo "Signing lines after patch (preview):"
+          grep -n "CODE_SIGN_IDENTITY" "$PBXPROJ" | head -n 20 || true
 
       - name: Build Archive (Automatic signing)
         script: |
           set -e
 
-          XCODEPROJ=$(find ./build -maxdepth 8 -name "*.xcodeproj" | head -n 1)
+          XCODEPROJ=$(find ./build -maxdepth 10 -name "*.xcodeproj" | head -n 1)
           echo "Project: $XCODEPROJ"
           if [ -z "$XCODEPROJ" ]; then
-            echo "No .xcodeproj found after export!"
-            find ./build -maxdepth 8 -type f -print || true
+            echo "No .xcodeproj found!"
             exit 1
           fi
-
-          xcodebuild -list -project "$XCODEPROJ"
 
           SCHEME=$(xcodebuild -list -project "$XCODEPROJ" \
             | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}' \
@@ -92,7 +91,6 @@ workflows:
             exit 1
           fi
 
-          # ВАЖНО: не указываем Apple Distribution вручную — иначе снова конфликт.
           xcodebuild \
             -project "$XCODEPROJ" \
             -scheme "$SCHEME" \
@@ -101,12 +99,12 @@ workflows:
             -archivePath "$CM_BUILD_DIR/App.xcarchive" \
             CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM="$TEAM_ID" \
+            CODE_SIGN_IDENTITY="" \
             archive
 
       - name: Export IPA (App Store)
         script: |
           set -e
-
           cat > "$CM_BUILD_DIR/ExportOptions.plist" <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
