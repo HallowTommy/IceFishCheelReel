@@ -115,13 +115,22 @@ workflows:
         script: |
           set -e
 
-          ls -la ipa || true
-          test -f ipa/ios.ipa
+          cd ipa
+          ls -la
+          test -f ios.ipa
 
-          # Записываем ключ из secret env var в файл
+          echo "KEY_ID: $APPSTORE_KEY_ID"
+          echo "ISSUER_ID prefix: ${APPSTORE_ISSUER_ID:0:8}..."
+          echo "ASC_PRIVATE_KEY length: ${#ASC_PRIVATE_KEY}"
+
+          # если ключ пустой — сразу понятная ошибка
+          if [ -z "$ASC_PRIVATE_KEY" ]; then
+            echo "ERROR: ASC_PRIVATE_KEY is empty. Add it as a Secret env var (or in ICEFISH group)."
+            exit 1
+          fi
+
           printf "%s" "$ASC_PRIVATE_KEY" > /tmp/AuthKey.p8
 
-          # Нормализуем переводы строк (на случай \n и CRLF)
           python3 - <<'PY'
           import pathlib
           p = pathlib.Path("/tmp/AuthKey.p8")
@@ -130,15 +139,15 @@ workflows:
           p.write_text(s)
           PY
 
-          # Быстрая проверка, что файл похож на ключ (без вывода секрета)
-          head -n 1 /tmp/AuthKey.p8 | grep "BEGIN PRIVATE KEY" >/dev/null
+          head -n 1 /tmp/AuthKey.p8
 
           app-store-connect publish \
-            --path ipa/ios.ipa \
+            --path ios.ipa \
             --key-id "$APPSTORE_KEY_ID" \
             --issuer-id "$APPSTORE_ISSUER_ID" \
             --private-key /tmp/AuthKey.p8 \
             --testflight
+
 
     artifacts:
       - ipa/*.ipa
