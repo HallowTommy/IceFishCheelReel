@@ -109,5 +109,5 @@ workflows:
       app_store_connect:
         key_id: $APPSTORE_KEY_ID
         issuer_id: $APPSTORE_ISSUER_ID
-        private_key: $ASC_PRIVATE_KEY
+        api_key: $ASC_PRIVATE_KEY
         submit_to_testflight: true
