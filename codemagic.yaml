@@ -6,7 +6,7 @@ workflows:
 
     environment:
       groups:
-    - ICEFISH
+        - ICEFISH
       vars:
         GODOT_TEMPL_VERSION_DIR: "4.6.1.stable"
         EXPORT_PRESET: "iOS"
