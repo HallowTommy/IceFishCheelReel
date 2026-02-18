@@ -33,7 +33,12 @@ workflows:
           https://github.com/godotengine/godot/releases/download/4.6.1-stable/Godot_v4.6.1-stable_export_templates.tpz
 
           mkdir -p "$HOME/Library/Application Support/Godot/export_templates/4.6.1.stable"
-          unzip -o templates.tpz -d "$HOME/Library/Application Support/Godot/export_templates/4.6.1.stable"
+
+          unzip -o templates.tpz
+
+          # Перемещаем ios.zip туда, куда Godot ожидает
+          mv templates/* "$HOME/Library/Application Support/Godot/export_templates/4.6.1.stable/"
+
 
       - name: Export iOS project
         script: |
