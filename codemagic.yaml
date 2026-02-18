@@ -5,10 +5,11 @@ workflows:
     max_build_duration: 60
 
     environment:
-      vars:
-        TEAM_ID: "DVPA8W2PW5"
-        EXPORT_PRESET: "iOS"
-        GODOT_TEMPL_VERSION_DIR: "4.6.1.stable"
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.cerentaner.icefishadventure
+        provisioning_profiles:
+          - ICEFISH_APPSTORE_PROFILE
 
     scripts:
       - name: Install dependencies
