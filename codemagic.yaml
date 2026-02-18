@@ -1,0 +1,80 @@
+workflows:
+  ios-godot:
+    name: iOS Godot 4.6 Build
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+
+    environment:
+      vars:
+        GODOT_VERSION: "4.6"
+        EXPORT_PRESET: "iOS"
+        EXPORT_DIR: "build/ios"
+
+    scripts:
+      - name: Install dependencies
+        script: |
+          brew update
+          brew install wget unzip || true
+
+      - name: Download Godot 4.6 + templates
+        script: |
+          set -e
+          mkdir tools
+          cd tools
+
+          wget -O godot.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_macos.universal.zip
+          unzip godot.zip
+          chmod +x Godot*.app/Contents/MacOS/Godot*
+
+          wget -O templates.tpz https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz
+          mkdir -p "$HOME/Library/Application Support/Godot/export_templates/${GODOT_VERSION}.stable"
+          unzip templates.tpz -d "$HOME/Library/Application Support/Godot/export_templates/${GODOT_VERSION}.stable"
+
+      - name: Export iOS project
+        script: |
+          set -e
+          mkdir -p ${EXPORT_DIR}
+
+          GODOT_BIN=$(find tools -type f -path "*Godot*.app/Contents/MacOS/*" | head -n 1)
+          echo "Using Godot: $GODOT_BIN"
+
+          "$GODOT_BIN" --headless --path . --export-release "${EXPORT_PRESET}" "${EXPORT_DIR}"
+
+      - name: Build IPA
+        script: |
+          set -e
+          cd ${EXPORT_DIR}
+
+          XCODEPROJ=$(find . -name "*.xcodeproj" | head -n 1)
+          echo "Project: $XCODEPROJ"
+
+          SCHEME=$(xcodebuild -list -project "$XCODEPROJ" | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}')
+          echo "Scheme: $SCHEME"
+
+          xcodebuild \
+            -project "$XCODEPROJ" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -archivePath "$CM_BUILD_DIR/build/App.xcarchive" \
+            archive
+
+          cat > "$CM_BUILD_DIR/build/ExportOptions.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>signingStyle</key>
+            <string>automatic</string>
+          </dict>
+          </plist>
+          EOF
+
+          xcodebuild -exportArchive \
+            -archivePath "$CM_BUILD_DIR/build/App.xcarchive" \
+            -exportPath "$CM_BUILD_DIR/build/ipa" \
+            -exportOptionsPlist "$CM_BUILD_DIR/build/ExportOptions.plist"
+
+    artifacts:
+      - build/ipa/*.ipa
