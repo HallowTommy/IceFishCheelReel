@@ -71,28 +71,28 @@ workflows:
         script: |
           set -e
 
-          # Ищем .xcodeproj где бы он ни оказался внутри ./build
           XCODEPROJ=$(find ./build -maxdepth 8 -name "*.xcodeproj" | head -n 1)
           echo "Project: $XCODEPROJ"
 
           if [ -z "$XCODEPROJ" ]; then
             echo "No .xcodeproj found after export!"
-            echo "Files under ./build:"
             find ./build -maxdepth 8 -type f -print || true
             exit 1
           fi
 
-          # Узнаём первую доступную схему
           xcodebuild -list -project "$XCODEPROJ"
-          SCHEME=$(xcodebuild -list -project "$XCODEPROJ" | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}')
+
+          SCHEME=$(xcodebuild -list -project "$XCODEPROJ" \
+            | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}' \
+            | xargs)
+
           echo "Scheme: $SCHEME"
 
           if [ -z "$SCHEME" ]; then
-            echo "No scheme found in project!"
+            echo "No scheme found!"
             exit 1
           fi
 
-          # Архивируем
           xcodebuild \
             -project "$XCODEPROJ" \
             -scheme "$SCHEME" \
@@ -100,7 +100,6 @@ workflows:
             -archivePath "$CM_BUILD_DIR/App.xcarchive" \
             archive
 
-          # Экспорт IPA (под App Store). На этом шаге позже может потребоваться signing.
           cat > "$CM_BUILD_DIR/ExportOptions.plist" <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -118,6 +117,7 @@ workflows:
             -archivePath "$CM_BUILD_DIR/App.xcarchive" \
             -exportPath "$CM_BUILD_DIR/ipa" \
             -exportOptionsPlist "$CM_BUILD_DIR/ExportOptions.plist"
+
 
     artifacts:
       - ipa/*.ipa
