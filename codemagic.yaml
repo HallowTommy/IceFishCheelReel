@@ -112,6 +112,11 @@ workflows:
             -exportPath "ipa" \
             -exportOptionsPlist "$CM_BUILD_DIR/ExportOptions.plist"
 
+    publishing:
+      app_store_connect:
+        api_key: CM1
+        submit_to_testflight: true
+        ipa: ipa/*.ipa
 
     artifacts:
       - ipa/*.ipa
