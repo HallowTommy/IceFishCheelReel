@@ -43,17 +43,17 @@ workflows:
       - name: Export iOS project
         script: |
           set -e
-
           echo "Exporting iOS..."
-          mkdir -p build
+          mkdir -p "./build/ios"
 
           GODOT_BIN=$(find tools -type f -path "*Godot*.app/Contents/MacOS/*" | head -n 1)
+          "$GODOT_BIN" --headless --path . --export-release "iOS" "./build/ios"
 
-          "$GODOT_BIN" --headless --path . --export-release "iOS" "build"
+          echo "Find xcodeproj:"
+          find ./build -name "*.xcodeproj" -maxdepth 5 -print || true
+          echo "List build:"
+          find ./build -maxdepth 3 -type d -print || true
 
-          echo "Listing build directory:"
-          find build -maxdepth 4 -type d -print
-          find build -maxdepth 4 -name "*.xcodeproj" -print
 
       - name: Debug export folder
         script: |
@@ -65,8 +65,13 @@ workflows:
           set -e
           cd build/ios
 
-          XCODEPROJ=$(find . -name "*.xcodeproj" | head -n 1)
-          echo "Project: $XCODEPROJ"
+XCODEPROJ=$(find ./build -name "*.xcodeproj" | head -n 1)
+echo "Project: $XCODEPROJ"
+if [ -z "$XCODEPROJ" ]; then
+  echo "No .xcodeproj found!"
+  find ./build -maxdepth 5 -type f -print
+  exit 1
+fi
 
           SCHEME=$(xcodebuild -list -project "$XCODEPROJ" | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}')
           echo "Scheme: $SCHEME"
