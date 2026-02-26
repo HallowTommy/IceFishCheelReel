@@ -20,11 +20,13 @@ config/icon="res://icon.svg"
 
 Global="*uid://cwecbf0ggokew"
 AudioManager="*uid://bmwjbjv74obss"
+Ads="*uid://o7mkyr8k302e"
 
 [display]
 
 window/size/viewport_width=1080
 window/size/viewport_height=1920
+window/size/mode=2
 window/stretch/mode="canvas_items"
 window/handheld/orientation=1
 

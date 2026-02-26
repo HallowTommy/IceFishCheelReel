@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b7c35ie6oam2h" path="res://assets/art/menu/2.png" id="3_85g3d"]
 [ext_resource type="PackedScene" uid="uid://c7veco5r20d7q" path="res://scenes/setting.tscn" id="3_tbgi4"]
 [ext_resource type="Texture2D" uid="uid://bhcr73uqhtf6y" path="res://assets/art/menu/menu2.png" id="4_choun"]
-[ext_resource type="FontFile" uid="uid://bssopqtd7xymm" path="res://assets/fonts/Fredoka-Bold.ttf" id="5_ya4ey"]
+[ext_resource type="FontFile" uid="uid://bssopqtd7xymm" path="res://assets/Fonts/Fredoka-Bold.ttf" id="5_ya4ey"]
 [ext_resource type="PackedScene" uid="uid://cvp7f4xkjk7wl" path="res://scenes/level_select.tscn" id="8_tipki"]
 [ext_resource type="AudioStream" uid="uid://bn8owih3ddbr3" path="res://assets/audio/main_menu_music.mp3" id="9_85g3d"]
 
