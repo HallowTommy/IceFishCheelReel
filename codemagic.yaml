@@ -68,7 +68,7 @@ workflows:
           "$GODOT_BIN" --headless \
             --path . \
             --export-release "${EXPORT_PRESET}" \
-            build/ios
+            build/ios || { echo "Export failed"; exit 1; }
 
       - name: Inject WebViewManager.swift + link WebKit.framework
         script: |
