@@ -92,7 +92,7 @@ workflows:
 
           # Кладём файл рядом с .xcodeproj, чтобы путь 'WebViewManager.swift' был валиден
           IOS_PROJ_ROOT=$(dirname "$XCODEPROJ")
-          cp -v "ios/plugins/webview/WebViewManager.swift" "$IOS_PROJ_ROOT/WebViewManager.swift"
+          cp -v "ios/plugins/WebViewManager.swift" "$IOS_PROJ_ROOT/WebViewManager.swift"
 
           cat > /tmp/inject_webview.rb <<'RUBY'
           require 'xcodeproj'
