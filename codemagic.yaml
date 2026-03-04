@@ -73,8 +73,8 @@ workflows:
         script: |
           set -e
 
-          if [ ! -f "ios/plugins/webview/WebViewManager.swift" ]; then
-            echo "ERROR: ios/plugins/webview/WebViewManager.swift not found in repo"
+          if [ ! -f "ios/plugins/WebViewManager.swift" ]; then
+            echo "ERROR: ios/plugins/WebViewManager.swift not found in repo"
             exit 1
           fi
 
