@@ -44,6 +44,19 @@ workflows:
         script: |
           set -e
           mkdir -p build/ios
+
+          # Получаем путь до Godot
+          GODOT_BIN=$(find tools -type f -path "*Godot*.app/Contents/MacOS/*" | head -n 1)
+
+          if [ -z "$GODOT_BIN" ]; then
+            echo "ERROR: GODOT_BIN not set"
+            exit 1
+          fi
+
+          echo "Godot bin: $GODOT_BIN"
+
+          # Экспортируем проект
+          echo "Exporting iOS project with preset: $EXPORT_PRESET"
           "$GODOT_BIN" --headless \
             --path . \
             --export-release "${EXPORT_PRESET}" \
