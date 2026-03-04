@@ -1,34 +1,20 @@
 workflows:
-  ios-godot-appstore-upload:
-    name: iOS Godot 4.6.1 > Build IPA (WebView injected) + Upload to App Store Connect
+  ios-godot-app-preview:
+    name: iOS Godot 4.6.1 > App Preview (Simulator)
     instance_type: mac_mini_m2
     max_build_duration: 60
 
     environment:
-      groups:
-        - ICEFISH
-
       vars:
         GODOT_VERSION: "4.6.1-stable"
         GODOT_TEMPL_VERSION_DIR: "4.6.1.stable"
         EXPORT_PRESET: "iOS"
-
-        APPSTORE_KEY_ID: "HJVGKL3JHV"
-        APPSTORE_ISSUER_ID: "8dc9f774-55a2-40f2-ae00-9167b7c5bf1f"
-
-        BUNDLE_ID: "com.cerentaner.icefishadventure"
-        PROFILE_NAME: "IceFishProfile"
-
-      ios_signing:
-        provisioning_profiles:
-          - ICEFISH_APPSTORE_PROFILE
 
     scripts:
       - name: Install dependencies
         script: |
           set -e
           brew install curl unzip || true
-          sudo gem install xcodeproj -N
 
       - name: Download Godot
         script: |
@@ -69,80 +55,7 @@ workflows:
             --export-release "${EXPORT_PRESET}" \
             build/ios
 
-      - name: Inject WebViewManager.swift + link WebKit.framework
-        script: |
-          set -e
-
-          if [ ! -f "ios/plugins/WebViewManager.swift" ]; then
-            echo "ERROR: ios/plugins/WebViewManager.swift not found in repo"
-            exit 1
-          fi
-
-          XCODEPROJ=$(find build -name "*.xcodeproj" | head -n 1)
-          if [ -z "$XCODEPROJ" ]; then
-            echo "ERROR: .xcodeproj not found under build/"
-            exit 1
-          fi
-          echo "Using project: $XCODEPROJ"
-
-          SCHEME=$(xcodebuild -list -project "$XCODEPROJ" \
-            | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}' \
-            | xargs)
-          echo "Using scheme: $SCHEME"
-
-          # Кладём файл рядом с .xcodeproj, чтобы путь 'WebViewManager.swift' был валиден
-          IOS_PROJ_ROOT=$(dirname "$XCODEPROJ")
-          cp -v "ios/plugins/WebViewManager.swift" "$IOS_PROJ_ROOT/WebViewManager.swift"
-
-          cat > /tmp/inject_webview.rb <<'RUBY'
-          require 'xcodeproj'
-
-          project_path = ENV['XCODEPROJ']
-          scheme = ENV['SCHEME']
-
-          project = Xcodeproj::Project.open(project_path)
-
-          target = project.targets.find { |t| t.name == scheme } ||
-                   project.targets.find { |t| t.product_type&.include?('application') } ||
-                   project.targets.first
-          raise "Target not found" unless target
-
-          swift_rel_path = 'WebViewManager.swift'
-
-          file_ref = project.files.find { |f| f.path == swift_rel_path } ||
-                     project.main_group.new_file(swift_rel_path)
-
-          unless target.source_build_phase.files_references.include?(file_ref)
-            target.source_build_phase.add_file_reference(file_ref, true)
-            puts "Added WebViewManager.swift to Compile Sources"
-          else
-            puts "WebViewManager.swift already in Compile Sources"
-          end
-
-          webkit_path = 'System/Library/Frameworks/WebKit.framework'
-          webkit_ref = project.files.find { |f| f.path == webkit_path } ||
-                       project.frameworks_group.new_file(webkit_path)
-
-          unless target.frameworks_build_phase.files_references.include?(webkit_ref)
-            target.frameworks_build_phase.add_file_reference(webkit_ref, true)
-            puts "Linked WebKit.framework"
-          else
-            puts "WebKit.framework already linked"
-          end
-
-          target.build_configurations.each do |cfg|
-            cfg.build_settings['SWIFT_VERSION'] ||= '5.0'
-          end
-
-          project.save
-          puts "Xcode project saved"
-          RUBY
-
-          export XCODEPROJ="$XCODEPROJ"
-          export SCHEME="$SCHEME"
-          ruby /tmp/inject_webview.rb
-
-      - name: Build archive + export IPA
+      - name: Build for iOS Simulator
         script: |
           set -e
 
@@ -152,48 +65,21 @@ workflows:
           SCHEME=$(xcodebuild -list -project "$XCODEPROJ" \
             | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}' \
             | xargs)
-          echo "Using scheme: $SCHEME"
 
-          xcode-project use-profiles --project "$XCODEPROJ"
+          echo "Using scheme: $SCHEME"
 
           xcodebuild \
             -project "$XCODEPROJ" \
             -scheme "$SCHEME" \
-            -configuration Release \
-            -sdk iphoneos \
-            -archivePath "$CM_BUILD_DIR/App.xcarchive" \
-            archive
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            build
 
-          cat > exportOptions.plist <<EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-          "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>method</key>
-              <string>app-store-connect</string>
-              <key>signingStyle</key>
-              <string>manual</string>
-              <key>provisioningProfiles</key>
-              <dict>
-                  <key>${BUNDLE_ID}</key>
-                  <string>${PROFILE_NAME}</string>
-              </dict>
-          </dict>
-          </plist>
-          EOF
-
-          xcodebuild -exportArchive \
-            -archivePath "$CM_BUILD_DIR/App.xcarchive" \
-            -exportPath ipa \
-            -exportOptionsPlist exportOptions.plist
+      - name: Collect .app
+        script: |
+          mkdir -p simulator_artifacts
+          find ~/Library/Developer/Xcode/DerivedData -name "*.app" -type d -exec cp -R {} simulator_artifacts/ \;
 
     artifacts:
-      - ipa/*.ipa
-
-    publishing:
-      app_store_connect:
-        api_key: $ASC_PRIVATE_KEY
-        key_id: $APPSTORE_KEY_ID
-        issuer_id: $APPSTORE_ISSUER_ID
-        submit_to_testflight: false
+      - simulator_artifacts/*.app
