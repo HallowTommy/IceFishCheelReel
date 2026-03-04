@@ -21,24 +21,21 @@ workflows:
           set -e
           mkdir -p tools
           cd tools
-
           curl -L -o godot.zip \
             https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_macos.universal.zip
-
           unzip -o godot.zip
           chmod +x Godot*.app/Contents/MacOS/Godot*
+          GODOT_BIN=$(find tools -type f -path "*Godot*.app/Contents/MacOS/*" | head -n 1)
+          echo "Godot bin: $GODOT_BIN"
 
       - name: Install export templates
         script: |
           set -e
           cd tools
-
           curl -L -o templates.tpz \
             https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz
-
           TEMPL_DIR="$HOME/Library/Application Support/Godot/export_templates/${GODOT_TEMPL_VERSION_DIR}"
           mkdir -p "$TEMPL_DIR"
-
           unzip -o templates.tpz
           mv templates/* "$TEMPL_DIR/"
 
@@ -46,10 +43,6 @@ workflows:
         script: |
           set -e
           mkdir -p build/ios
-
-          GODOT_BIN=$(find tools -type f -path "*Godot*.app/Contents/MacOS/*" | head -n 1)
-          echo "Godot bin: $GODOT_BIN"
-
           "$GODOT_BIN" --headless \
             --path . \
             --export-release "${EXPORT_PRESET}" \
@@ -58,16 +51,12 @@ workflows:
       - name: Build for iOS Simulator (force x86_64)
         script: |
           set -e
-
           XCODEPROJ=$(find build -name "*.xcodeproj" | head -n 1)
           echo "Using project: $XCODEPROJ"
-
           SCHEME=$(xcodebuild -list -project "$XCODEPROJ" \
             | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}' \
             | xargs)
-
           echo "Using scheme: $SCHEME"
-
           xcodebuild \
             -project "$XCODEPROJ" \
             -scheme "$SCHEME" \
@@ -82,7 +71,9 @@ workflows:
 
       - name: Collect .app
         script: |
+          set -e
           mkdir -p simulator_artifacts
+          ls ~/Library/Developer/Xcode/DerivedData
           find ~/Library/Developer/Xcode/DerivedData -name "*.app" -type d -exec cp -R {} simulator_artifacts/ \;
 
     artifacts:
