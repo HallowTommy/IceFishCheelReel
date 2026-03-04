@@ -15,6 +15,7 @@ workflows:
         script: |
           set -e
           brew install curl unzip || true
+          sudo gem install xcodeproj -N
 
       - name: Download Godot
         script: |
@@ -47,6 +48,79 @@ workflows:
             --path . \
             --export-release "${EXPORT_PRESET}" \
             build/ios
+
+      - name: Inject WebViewManager.swift + link WebKit.framework
+        script: |
+          set -e
+
+          if [ ! -f "ios/plugins/WebViewManager.swift" ]; then
+            echo "ERROR: ios/plugins/WebViewManager.swift not found in repo"
+            exit 1
+          fi
+
+          XCODEPROJ=$(find build -name "*.xcodeproj" | head -n 1)
+          if [ -z "$XCODEPROJ" ]; then
+            echo "ERROR: .xcodeproj not found under build/"
+            exit 1
+          fi
+          echo "Using project: $XCODEPROJ"
+
+          SCHEME=$(xcodebuild -list -project "$XCODEPROJ" \
+            | awk '/Schemes:/{flag=1;next} flag && NF{print; exit}' \
+            | xargs)
+          echo "Using scheme: $SCHEME"
+
+          # Копируем WebViewManager.swift в нужную папку рядом с .xcodeproj
+          IOS_PROJ_ROOT=$(dirname "$XCODEPROJ")
+          cp -v "ios/plugins/WebViewManager.swift" "$IOS_PROJ_ROOT/WebViewManager.swift"
+
+          cat > /tmp/inject_webview.rb <<'RUBY'
+          require 'xcodeproj'
+
+          project_path = ENV['XCODEPROJ']
+          scheme = ENV['SCHEME']
+
+          project = Xcodeproj::Project.open(project_path)
+
+          target = project.targets.find { |t| t.name == scheme } ||
+                   project.targets.find { |t| t.product_type&.include?('application') } ||
+                   project.targets.first
+          raise "Target not found" unless target
+
+          swift_rel_path = 'WebViewManager.swift'
+
+          file_ref = project.files.find { |f| f.path == swift_rel_path } ||
+                     project.main_group.new_file(swift_rel_path)
+
+          unless target.source_build_phase.files_references.include?(file_ref)
+            target.source_build_phase.add_file_reference(file_ref, true)
+            puts "Added WebViewManager.swift to Compile Sources"
+          else
+            puts "WebViewManager.swift already in Compile Sources"
+          end
+
+          webkit_path = 'System/Library/Frameworks/WebKit.framework'
+          webkit_ref = project.files.find { |f| f.path == webkit_path } ||
+                       project.frameworks_group.new_file(webkit_path)
+
+          unless target.frameworks_build_phase.files_references.include?(webkit_ref)
+            target.frameworks_build_phase.add_file_reference(webkit_ref, true)
+            puts "Linked WebKit.framework"
+          else
+            puts "WebKit.framework already linked"
+          end
+
+          target.build_configurations.each do |cfg|
+            cfg.build_settings['SWIFT_VERSION'] ||= '5.0'
+          end
+
+          project.save
+          puts "Xcode project saved"
+          RUBY
+
+          export XCODEPROJ="$XCODEPROJ"
+          export SCHEME="$SCHEME"
+          ruby /tmp/inject_webview.rb
 
       - name: Build for iOS Simulator (force x86_64)
         script: |
