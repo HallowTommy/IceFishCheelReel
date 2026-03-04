@@ -45,6 +45,14 @@ workflows:
           set -e
           mkdir -p build/ios
 
+          # Ищем проект Xcode
+          XCODEPROJ=$(find . -name "*.xcodeproj" | head -n 1)
+          if [ -z "$XCODEPROJ" ]; then
+            echo "ERROR: Xcode project not found"
+            exit 1
+          fi
+          echo "Found Xcode project at: $XCODEPROJ"
+
           # Получаем путь до Godot
           GODOT_BIN=$(find tools -type f -path "*Godot*.app/Contents/MacOS/*" | head -n 1)
 
